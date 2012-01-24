@@ -1,11 +1,12 @@
 ﻿namespace EntitySystem
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
 
     /// <summary>
     /// Maintains a reference to the components in the Entity System, providing access to these.
+    /// <para />
+    /// This class is not thread safe.
     /// </summary>
     public class EntityManager
     {
@@ -28,12 +29,12 @@
         /// <summary>
         /// Mapping of component type to each entity that uses that component and the component instance itself.
         /// </summary>
-        private Dictionary<Type, Dictionary<int, IComponent>> componentMap;
+        private Dictionary<Type, Dictionary<int, IComponent>> componentsByType;
 
         /// <summary>
         /// A list of the existing entities such that a new unique entity id can quickly be created.
         /// </summary>
-        private List<int> existingEntities;
+        private HashSet<int> existingEntities;
 
         /// <summary>
         /// The lowest unassigned entity id.
@@ -49,8 +50,8 @@
         /// </summary>
         public EntityManager()
         {
-            this.componentMap = new Dictionary<Type, Dictionary<int, IComponent>>();
-            this.existingEntities = new List<int>();
+            this.componentsByType = new Dictionary<Type, Dictionary<int, IComponent>>();
+            this.existingEntities = new HashSet<int>();
             this.lowestUnnasignedEntity = MinEntityId;
         }
 
@@ -85,9 +86,50 @@
             }
 
             // Remove any references to this identity from the component map
-            foreach (Dictionary<int, IComponent> entityComponent in this.componentMap.Values)
+            foreach (Dictionary<int, IComponent> componentsByEntity in this.componentsByType.Values)
             {
-                entityComponent.Remove(entity);
+                componentsByEntity.Remove(entity);
+            }
+        }
+
+        /// <summary>
+        /// Add a component for the given entity.
+        /// </summary>
+        /// <param name="entity">The entity.</param>
+        /// <param name="component">The component to add.</param>
+        public void AddComponent(int entity, IComponent component)
+        {
+            // Get the components dictionary for this component type
+            Dictionary<int, IComponent> componentsByEntity;
+            if (this.componentsByType.ContainsKey(component.GetType()))
+            {
+                componentsByEntity = this.componentsByType[component.GetType()];
+            }
+            else
+            {
+                componentsByEntity = new Dictionary<int, IComponent>();
+                this.componentsByType.Add(component.GetType(), componentsByEntity);
+            }
+
+            // Add the component
+            componentsByEntity.Add(entity, component);
+        }
+
+        /// <summary>
+        /// Remove the component for the given entity.
+        /// </summary>
+        /// <param name="entity">The entity.</param>
+        /// <param name="component">The component to remove.</param>
+        public void RemoveComponent(int entity, IComponent component)
+        {
+            if (this.componentsByType.ContainsKey(component.GetType()))
+            {
+                Dictionary<int, IComponent> componentsByEntity = this.componentsByType[component.GetType()];
+                componentsByEntity.Remove(entity);
+            }
+            else
+            {
+                throw new ApplicationException("The component " + component + " does not exist for any entities.");
             }
         }
 
@@ -99,24 +141,16 @@
         /// <returns>The component instance; null if the entity does not have the given component.</returns>
         public IComponent GetComponent(int entity, Type componentType)
         {
-            // Check that the given type is valid
-            if (componentType.GetInterface("IComponent") == null)
+            if (this.componentsByType.ContainsKey(componentType))
             {
-                throw new ArgumentException("Type parameter must implement the IComponent interface.", "componentType");
-            }
-
-            IComponent component = null;
-
-            if (this.componentMap.ContainsKey(componentType))
-            {
-                Dictionary<int, IComponent> entities = this.componentMap[componentType];
-                if (entities.ContainsKey(entity))
+                Dictionary<int, IComponent> componentsByEntity = this.componentsByType[componentType];
+                if (componentsByEntity.ContainsKey(entity))
                 {
-                    component = entities[entity];
+                    return componentsByEntity[entity];
                 }
             }
 
-            return component;
+            return null;
         }
 
         /// <summary>
@@ -124,28 +158,16 @@
         /// </summary>
         /// <param name="componentType">The type of component.</param>
         /// <returns>An array of the components.</returns>
-        public IComponent[] GetComponents(Type componentType)
+        public ICollection<IComponent> GetComponents(Type componentType)
         {
-            // Check that the given type is valid
-            if (componentType.GetInterface("IComponent") == null)
+            if (this.componentsByType.ContainsKey(componentType))
             {
-                throw new ArgumentException("Type parameter must implement the IComponent interface.", "componentType");
-            }
-
-            IComponent[] components;
-
-            if (this.componentMap.ContainsKey(componentType))
-            {
-                ICollection<IComponent> componentCollection = this.componentMap[componentType].Values;
-                components = new IComponent[componentCollection.Count];
-                componentCollection.CopyTo(components, 0);
+                return this.componentsByType[componentType].Values;
             }
             else
             {
-                components = new IComponent[0];
+                return new IComponent[0];
             }
-
-            return components;
         }
 
         /// <summary>
@@ -153,28 +175,16 @@
         /// </summary>
         /// <param name="componentType">The type of component.</param>
         /// <returns>An array of entities.</returns>
-        public int[] GetEntitiesWithComponent(Type componentType)
+        public ICollection<int> GetEntitiesWithComponent(Type componentType)
         {
-            // Check that the given type is valid
-            if (componentType.GetInterface("IComponent") == null)
+            if (this.componentsByType.ContainsKey(componentType))
             {
-                throw new ArgumentException("Type parameter must implement the IComponent interface.", "componentType");
-            }
-
-            int[] entities;
-
-            if (this.componentMap.ContainsKey(componentType))
-            {
-                ICollection<int> entityCollection = this.componentMap[componentType].Keys;
-                entities = new int[entityCollection.Count];
-                entityCollection.CopyTo(entities, 0);
+                return this.componentsByType[componentType].Keys;
             }
             else
             {
-                entities = new int[0];
+                return new int[0];
             }
-
-            return entities;
         }
 
         #endregion
