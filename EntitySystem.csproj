@@ -42,8 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EntityManager.cs" />
-    <Compile Include="ExecutionType.cs" />
-    <Compile Include="GameState.cs" />
+    <Compile Include="GameStepState.cs" />
     <Compile Include="IComponent.cs" />
     <Compile Include="ISystem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

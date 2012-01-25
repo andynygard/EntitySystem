@@ -13,6 +13,15 @@
         private DateTime lastStepTime;
 
         /// <summary>
+        /// Initializes a new instance of the GameStepState class.
+        /// </summary>
+        public GameStepState()
+        {
+            this.Delta = 0;
+            this.lastStepTime = DateTime.Now;
+        }
+
+        /// <summary>
         /// Gets the number of milliseconds since the the last game step.
         /// </summary>
         public int Delta { get; private set; }
@@ -23,6 +32,7 @@
         public void Step()
         {
             this.Delta = (int)DateTime.Now.Subtract(lastStepTime).TotalMilliseconds;
+            this.lastStepTime = DateTime.Now;
         }
     }
 }
