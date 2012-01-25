@@ -18,7 +18,7 @@
         public GameStepState()
         {
             this.Delta = 0;
-            this.lastStepTime = DateTime.Now;
+            this.lastStepTime = DateTime.MinValue;
         }
 
         /// <summary>
@@ -31,7 +31,12 @@
         /// </summary>
         public void Step()
         {
-            this.Delta = (int)DateTime.Now.Subtract(lastStepTime).TotalMilliseconds;
+            // Check if this is the first step, in which case Delta will remain at zero.
+            if (!this.lastStepTime.Equals(DateTime.MinValue))
+            {
+                this.Delta = (int)DateTime.Now.Subtract(lastStepTime).TotalMilliseconds;
+            }
+
             this.lastStepTime = DateTime.Now;
         }
     }
