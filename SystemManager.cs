@@ -1,6 +1,5 @@
 ﻿namespace EntitySystem
 {
-    using System;
     using System.Collections.Generic;
 
     /// <summary>
@@ -18,8 +17,6 @@
         /// </summary>
         private HashSet<ISystem> drawSystems;
 
-        private DateTime lastUpdateStep;
-
         /// <summary>
         /// Initializes a new instance of the SystemManager class.
         /// </summary>
@@ -29,52 +26,69 @@
             this.drawSystems = new HashSet<ISystem>();
         }
 
-        public void ProcessSystems(ExecutionType executionType)
+        /// <summary>
+        /// Perform update processing for all systems that are registered for it.
+        /// </summary>
+        public void ProcessUpdateSystems()
         {
-            if (executionType == ExecutionType.Update)
+            foreach (ISystem system in this.updateSystems)
             {
-                foreach (ISystem system in this.updateSystems)
+                if (system.UpdateEnabled)
                 {
-                    system.Process();
-                }
-            }
-            else
-            {
-                foreach (ISystem system in this.drawSystems)
-                {
-                    system.Process();
+                    system.ProcessUpdate();
                 }
             }
         }
 
         /// <summary>
-        /// Add a system.
+        /// Perform draw processing for all systems that are registered for it.
+        /// </summary>
+        public void ProcessDrawSystems()
+        {
+            foreach (ISystem system in this.drawSystems)
+            {
+                if (system.DrawEnabled)
+                {
+                    system.ProcessDraw();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Add a system for update processing.
         /// </summary>
         /// <param name="system">The system to add.</param>
-        /// <param name="executionType">The execution type.</param>
-        public void AddSystem(ISystem system, ExecutionType executionType)
+        public void AddUpdateSystem(ISystem system)
         {
-            if (executionType == ExecutionType.Update)
-            {
-                this.updateSystems.Add(system);
-            }
-            else
-            {
-                this.drawSystems.Add(system);
-            }
+            this.updateSystems.Add(system);
         }
 
         /// <summary>
-        /// Remove a system.
+        /// Add a system for draw processing.
+        /// </summary>
+        /// <param name="system">The system to add.</param>
+        public void AddDrawSystem(ISystem system)
+        {
+            this.drawSystems.Add(system);
+        }
+
+        /// <summary>
+        /// Remove a system from update processing.
         /// </summary>
         /// <param name="system">The system to remove.</param>
-        public void RemoveSystem(ISystem system)
+        public void RemoveUpdateSystem(ISystem system)
         {
             if (this.updateSystems.Contains(system))
             {
                 this.updateSystems.Remove(system);
             }
-
+        }
+        /// <summary>
+        /// Remove a system from draw processing.
+        /// </summary>
+        /// <param name="system">The system to remove.</param>
+        public void RemoveDrawSystem(ISystem system)
+        {
             if (this.drawSystems.Contains(system))
             {
                 this.drawSystems.Remove(system);

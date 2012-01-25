@@ -1,9 +1,8 @@
 ﻿namespace EntitySystem
 {
     /// <summary>
-    /// A system in the Entity System.
-    /// <para />
-    /// A system is responsible for processing the component(s) of a particular aspect of the game.
+    /// A system in the Entity System. A system is responsible for processing the component(s) of a particular aspect
+    /// of the game.
     /// </summary>
     public interface ISystem
     {
@@ -23,13 +22,12 @@
         GameStepState GameStepState { get; }
 
         /// <summary>
-        /// Update the game state.
+        /// Perform update processing.
         /// </summary>
-        /// <param name="delta">The number of milliseconds since the last game step.</param>
         void ProcessUpdate();
 
         /// <summary>
-        /// 
+        /// Perform draw processing.
         /// </summary>
         void ProcessDraw();
     }
