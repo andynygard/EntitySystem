@@ -3,95 +3,55 @@
     using System.Collections.Generic;
 
     /// <summary>
-    /// Manages all ISystem instances in the Entity System.
+    /// Manages a set of ISystem instances in the Entity System.
     /// </summary>
     public class SystemManager
     {
         /// <summary>
-        /// The systems responsible for updating the game state.
+        /// The systems being processed by this manager.
         /// </summary>
-        private HashSet<ISystem> updateSystems;
-
-        /// <summary>
-        /// The systems responsible for drawing.
-        /// </summary>
-        private HashSet<ISystem> drawSystems;
+        private HashSet<ISystem> systems;
 
         /// <summary>
         /// Initializes a new instance of the SystemManager class.
         /// </summary>
         public SystemManager()
         {
-            this.updateSystems = new HashSet<ISystem>();
-            this.drawSystems = new HashSet<ISystem>();
+            this.systems = new HashSet<ISystem>();
         }
 
         /// <summary>
-        /// Perform update processing for all systems that are registered for it.
+        /// Perform processing for all managed systems.
         /// </summary>
-        public void ProcessUpdateSystems()
+        public void ProcessSystems()
         {
-            foreach (ISystem system in this.updateSystems)
+            foreach (ISystem system in this.systems)
             {
-                if (system.UpdateEnabled)
+                if (system.Enabled)
                 {
-                    system.ProcessUpdate();
+                    system.Process();
                 }
             }
         }
 
         /// <summary>
-        /// Perform draw processing for all systems that are registered for it.
-        /// </summary>
-        public void ProcessDrawSystems()
-        {
-            foreach (ISystem system in this.drawSystems)
-            {
-                if (system.DrawEnabled)
-                {
-                    system.ProcessDraw();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Add a system for update processing.
+        /// Add a system.
         /// </summary>
         /// <param name="system">The system to add.</param>
-        public void AddUpdateSystem(ISystem system)
+        public void AddSystem(ISystem system)
         {
-            this.updateSystems.Add(system);
+            this.systems.Add(system);
         }
 
         /// <summary>
-        /// Add a system for draw processing.
-        /// </summary>
-        /// <param name="system">The system to add.</param>
-        public void AddDrawSystem(ISystem system)
-        {
-            this.drawSystems.Add(system);
-        }
-
-        /// <summary>
-        /// Remove a system from update processing.
+        /// Remove a system.
         /// </summary>
         /// <param name="system">The system to remove.</param>
-        public void RemoveUpdateSystem(ISystem system)
+        public void RemoveSystem(ISystem system)
         {
-            if (this.updateSystems.Contains(system))
+            if (this.systems.Contains(system))
             {
-                this.updateSystems.Remove(system);
-            }
-        }
-        /// <summary>
-        /// Remove a system from draw processing.
-        /// </summary>
-        /// <param name="system">The system to remove.</param>
-        public void RemoveDrawSystem(ISystem system)
-        {
-            if (this.drawSystems.Contains(system))
-            {
-                this.drawSystems.Remove(system);
+                this.systems.Remove(system);
             }
         }
     }

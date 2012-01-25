@@ -7,14 +7,9 @@
     public interface ISystem
     {
         /// <summary>
-        /// Gets a value indicating whether this system should be processed for update.
+        /// Gets a value indicating whether this system should be processed.
         /// </summary>
-        bool UpdateEnabled { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether this system should be processed for draw.
-        /// </summary>
-        bool DrawEnabled { get; }
+        bool Enabled { get; }
 
         /// <summary>
         /// Gets the state info for the current game step.
@@ -22,13 +17,8 @@
         GameStepState GameStepState { get; }
 
         /// <summary>
-        /// Perform update processing.
+        /// Perform the system's processing.
         /// </summary>
-        void ProcessUpdate();
-
-        /// <summary>
-        /// Perform draw processing.
-        /// </summary>
-        void ProcessDraw();
+        void Process();
     }
 }
