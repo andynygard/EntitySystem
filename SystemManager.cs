@@ -1,6 +1,7 @@
 ﻿namespace EntitySystem
 {
-    using System.Collections.Generic;
+    using System;
+    using System.Collections.Specialized;
 
     /// <summary>
     /// Manages a set of ISystem instances in the Entity System.
@@ -8,20 +9,22 @@
     public class SystemManager
     {
         /// <summary>
-        /// The systems being processed by this manager.
+        /// The systems being processed by this manager. Key = Type, Value = ISystem.
         /// </summary>
-        private HashSet<ISystem> systems;
+        private OrderedDictionary systems;
 
         /// <summary>
         /// Initializes a new instance of the SystemManager class.
         /// </summary>
         public SystemManager()
         {
-            this.systems = new HashSet<ISystem>();
+            this.systems = new OrderedDictionary();
         }
 
         /// <summary>
         /// Perform processing for all managed systems.
+        /// <para />
+        /// Note: Systems are processed in the same order in which they are added.
         /// </summary>
         /// <param name="delta">The number of milliseconds since the last processing occurred.</param>
         public void ProcessSystems(int delta)
@@ -41,27 +44,33 @@
         /// <param name="system">The system to add.</param>
         public void AddSystem(ISystem system)
         {
-            this.systems.Add(system);
+            this.systems.Add(system.GetType(), system);
         }
 
         /// <summary>
         /// Remove a system.
         /// </summary>
         /// <param name="system">The system to remove.</param>
-        /// <returns>True if the system was removed.</returns>
-        public bool RemoveSystem(ISystem system)
+        public void RemoveSystem(ISystem system)
         {
-            return this.systems.Remove(system);
+            this.systems.Remove(system.GetType());
         }
 
         /// <summary>
-        /// Determine whether the given system is managed by this SystemManager instance.
+        /// Get the system of the given type.
         /// </summary>
-        /// <param name="system">The system.</param>
-        /// <returns>True if the system is managed by this SystemManager instance.</returns>
-        public bool ManagesSystem(ISystem system)
+        /// <param name="systemType">The system type.</param>
+        /// <returns>The ISystem instance; null if there is no managed system of this type.</returns>
+        public ISystem GetSystem(Type systemType)
         {
-            return this.systems.Contains(system);
+            if (this.systems.Contains(systemType))
+            {
+                return (ISystem)this.systems[systemType];
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }
