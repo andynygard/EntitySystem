@@ -65,10 +65,16 @@
         /// <returns>The new entity.</returns>
         public int CreateEntity()
         {
-            int entity = this.GenerateNewEntityId();
+            int entity;
 
-            // Retain the id to prevent it from being used again
-            this.existingEntities.Add(entity);
+            lock (this.newEntityLock)
+            {
+                // Generate the id
+                entity = this.GenerateNewEntityId();
+
+                // Retain the id to prevent it from being used again
+                this.existingEntities.Add(entity);
+            }
 
             return entity;
         }
@@ -79,16 +85,16 @@
         /// <param name="entity">The entity to remove.</param>
         public void RemoveEntity(int entity)
         {
-            // Remove this entity from the internal list
             lock (this.newEntityLock)
             {
+                // Remove this entity from the internal list
                 this.existingEntities.Remove(entity);
-            }
 
-            // Remove any references to this identity from the component map
-            foreach (Dictionary<int, IComponent> componentsByEntity in this.componentsByType.Values)
-            {
-                componentsByEntity.Remove(entity);
+                // Remove any references to this entity from the component map
+                foreach (Dictionary<int, IComponent> componentsByEntity in this.componentsByType.Values)
+                {
+                    componentsByEntity.Remove(entity);
+                }
             }
         }
 
