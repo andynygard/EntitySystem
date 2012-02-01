@@ -163,7 +163,7 @@
         /// Get all of the components of the given type.
         /// </summary>
         /// <param name="componentType">The type of component.</param>
-        /// <returns>An array of the components.</returns>
+        /// <returns>A collection of components.</returns>
         public ICollection<IComponent> GetComponents(Type componentType)
         {
             if (this.componentsByType.ContainsKey(componentType))
@@ -180,7 +180,7 @@
         /// Gets all the entities that have a component of the given type.
         /// </summary>
         /// <param name="componentType">The type of component.</param>
-        /// <returns>An array of entities.</returns>
+        /// <returns>A collection of entities.</returns>
         public ICollection<int> GetEntitiesWithComponent(Type componentType)
         {
             if (this.componentsByType.ContainsKey(componentType))
