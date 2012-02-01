@@ -23,13 +23,14 @@
         /// <summary>
         /// Perform processing for all managed systems.
         /// </summary>
-        public void ProcessSystems()
+        /// <param name="delta">The number of milliseconds since the last processing occurred.</param>
+        public void ProcessSystems(int delta)
         {
             foreach (ISystem system in this.systems)
             {
                 if (system.Enabled)
                 {
-                    system.Process();
+                    system.Process(delta);
                 }
             }
         }

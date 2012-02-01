@@ -3,17 +3,16 @@
     /// <summary>
     /// Represents the game world.
     /// </summary>
-    public class World
+    public class EntitySystemWorld
     {
         /// <summary>
-        /// Initializes a new instance of the World class.
+        /// Initializes a new instance of the EntitySystemWorld class.
         /// </summary>
-        public World()
+        public EntitySystemWorld()
         {
             this.EntityManager = new EntityManager();
             this.UpdateSystemManager = new SystemManager();
             this.DrawSystemManager = new SystemManager();
-            this.GameStep = new GameStepState();
         }
 
         /// <summary>
@@ -32,29 +31,23 @@
         public SystemManager DrawSystemManager { get; private set; }
 
         /// <summary>
-        /// Gets the world's game step state.
+        /// Update the world state.
         /// </summary>
-        public GameStepState GameStep { get; private set; }
-
-        /// <summary>
-        /// Update the world state by one game step.
-        /// </summary>
-        public void Step()
+        /// <param name="delta">The number of milliseconds since the last step.</param>
+        public void Step(int delta)
         {
-            // Step forward the game state
-            this.GameStep.Step();
-
             // Process the update-related systems
-            this.UpdateSystemManager.ProcessSystems();
+            this.UpdateSystemManager.ProcessSystems(delta);
         }
 
         /// <summary>
         /// Draw the world state.
         /// </summary>
-        public void Draw()
+        /// <param name="delta">The number of milliseconds since the last draw.</param>
+        public void Draw(int delta)
         {
             // Process the draw-related systems
-            this.DrawSystemManager.ProcessSystems();
+            this.DrawSystemManager.ProcessSystems(delta);
         }
     }
 }

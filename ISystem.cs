@@ -12,13 +12,9 @@
         bool Enabled { get; }
 
         /// <summary>
-        /// Gets the state info for the current game step.
-        /// </summary>
-        GameStepState GameStepState { get; }
-
-        /// <summary>
         /// Perform the system's processing.
         /// </summary>
-        void Process();
+        /// <param name="delta">The number of milliseconds since the last processing occurred.</param>
+        void Process(int delta);
     }
 }
