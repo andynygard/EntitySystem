@@ -47,12 +47,20 @@
         /// Remove a system.
         /// </summary>
         /// <param name="system">The system to remove.</param>
-        public void RemoveSystem(ISystem system)
+        /// <returns>True if the system was removed.</returns>
+        public bool RemoveSystem(ISystem system)
         {
-            if (this.systems.Contains(system))
-            {
-                this.systems.Remove(system);
-            }
+            return this.systems.Remove(system);
+        }
+
+        /// <summary>
+        /// Determine whether the given system is managed by this SystemManager instance.
+        /// </summary>
+        /// <param name="system">The system.</param>
+        /// <returns>True if the system is managed by this SystemManager instance.</returns>
+        public bool ManagesSystem(ISystem system)
+        {
+            return this.systems.Contains(system);
         }
     }
 }
