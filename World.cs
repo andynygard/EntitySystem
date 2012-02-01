@@ -17,17 +17,17 @@
         }
 
         /// <summary>
-        /// Gets the world's EntityManager.
+        /// Gets the world's entity manager.
         /// </summary>
         public EntityManager EntityManager { get; private set; }
 
         /// <summary>
-        /// Gets the world's SystemManager for update systems.
+        /// Gets the world's manager for update systems.
         /// </summary>
         public SystemManager UpdateSystemManager { get; private set; }
 
         /// <summary>
-        /// Gets the world's SystemManager for draw systems.
+        /// Gets the world's manager for draw systems.
         /// </summary>
         public SystemManager DrawSystemManager { get; private set; }
 
