@@ -15,7 +15,7 @@
         /// <summary>
         /// Initializes a new instance of the GameStepState class.
         /// </summary>
-        public GameStepState()
+        internal GameStepState()
         {
             this.Delta = 0;
             this.lastStepTime = DateTime.MinValue;
@@ -29,7 +29,7 @@
         /// <summary>
         /// Update the delta value for a new game step.
         /// </summary>
-        public void Step()
+        internal void Step()
         {
             // Check if this is the first step, in which case Delta will remain at zero.
             if (!this.lastStepTime.Equals(DateTime.MinValue))
