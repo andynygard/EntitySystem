@@ -1,5 +1,8 @@
 ﻿namespace EntitySystem
 {
+    using EntitySystem.Entity;
+    using EntitySystem.Subsystem;
+
     /// <summary>
     /// Represents the game world.
     /// </summary>

@@ -1,4 +1,4 @@
-﻿namespace EntitySystem
+﻿namespace EntitySystem.Component
 {
     /// <summary>
     /// A component in the Entity system.

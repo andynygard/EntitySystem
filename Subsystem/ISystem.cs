@@ -1,4 +1,4 @@
-﻿namespace EntitySystem
+﻿namespace EntitySystem.Subsystem
 {
     /// <summary>
     /// A system in the Entity System. A system is responsible for processing the component(s) of a particular aspect

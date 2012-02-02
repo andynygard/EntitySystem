@@ -1,4 +1,4 @@
-﻿namespace EntitySystem
+﻿namespace EntitySystem.Subsystem
 {
     using System;
     using System.Collections.Specialized;

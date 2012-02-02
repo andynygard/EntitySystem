@@ -1,10 +1,7 @@
-﻿// ----------------------------------------------------------------------------
-// <copyright file="BaseSystem.cs" company="Acidwashed Games">
-//     Copyright 2012 Acidwashed Games. All right reserved.
-// </copyright>
-// ----------------------------------------------------------------------------
-namespace EntitySystem
+﻿namespace EntitySystem.Subsystem
 {
+    using EntitySystem.Entity;
+
     /// <summary>
     /// A base abstract implementation of the ISystem interface.
     /// </summary>

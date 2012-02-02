@@ -1,7 +1,8 @@
-﻿namespace EntitySystem
+﻿namespace EntitySystem.Entity
 {
     using System;
     using System.Collections.Generic;
+    using EntitySystem.Component;
 
     /// <summary>
     /// Maintains a reference to the components in the Entity System, providing access to these.
