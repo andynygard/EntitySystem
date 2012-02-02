@@ -29,7 +29,7 @@
         /// <param name="delta">The number of milliseconds since the last processing occurred.</param>
         public void ProcessSystems(int delta)
         {
-            foreach (ISystem system in this.systems)
+            foreach (ISystem system in this.systems.Values)
             {
                 if (system.Enabled)
                 {
