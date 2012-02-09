@@ -165,7 +165,7 @@
         /// </summary>
         /// <param name="componentType">The type of component.</param>
         /// <returns>A collection of components.</returns>
-        public ICollection<IComponent> GetComponents(Type componentType)
+        public IEnumerable<IComponent> GetComponents(Type componentType)
         {
             if (this.componentsByType.ContainsKey(componentType))
             {
@@ -182,7 +182,7 @@
         /// </summary>
         /// <param name="componentType">The type of component.</param>
         /// <returns>A collection of entities.</returns>
-        public ICollection<int> GetEntitiesWithComponent(Type componentType)
+        public IEnumerable<int> GetEntitiesWithComponent(Type componentType)
         {
             if (this.componentsByType.ContainsKey(componentType))
             {
