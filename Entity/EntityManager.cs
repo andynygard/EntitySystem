@@ -124,7 +124,20 @@
                 // Remove any references to this entity from the component map
                 foreach (Dictionary<int, IComponent> componentsByEntity in this.componentsByType.Values)
                 {
-                    componentsByEntity.Remove(entity);
+                    if (componentsByEntity.ContainsKey(entity))
+                    {
+                        // Get the component being removed
+                        IComponent component = componentsByEntity[entity];
+
+                        // Remove the component for this entity
+                        componentsByEntity.Remove(entity);
+
+                        // Fire event
+                        if (this.ComponentRemoved != null)
+                        {
+                            this.ComponentRemoved(this, entity, component);
+                        }
+                    }
                 }
             }
 
