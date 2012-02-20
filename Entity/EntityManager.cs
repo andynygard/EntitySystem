@@ -58,6 +58,30 @@
 
         #endregion
 
+        #region Events
+
+        /// <summary>
+        /// Fires when an entity is added to the EntityManager.
+        /// </summary>
+        public event EntityEvent EntityAdded;
+
+        /// <summary>
+        /// Fires when an entity is removed from the EntityManager.
+        /// </summary>
+        public event EntityEvent EntityRemoved;
+
+        /// <summary>
+        /// Fires when a component is added to the EntityManager.
+        /// </summary>
+        public event EntityComponentEvent ComponentAdded;
+
+        /// <summary>
+        /// Fires when a component is removed from the EntityManager.
+        /// </summary>
+        public event EntityComponentEvent ComponentRemoved;
+
+        #endregion
+
         #region Public Methods
 
         /// <summary>
@@ -75,6 +99,12 @@
 
                 // Retain the id to prevent it from being used again
                 this.existingEntities.Add(entity);
+            }
+
+            // Fire event
+            if (this.EntityAdded != null)
+            {
+                this.EntityAdded(this, entity);
             }
 
             return entity;
@@ -96,6 +126,12 @@
                 {
                     componentsByEntity.Remove(entity);
                 }
+            }
+
+            // Fire event
+            if (this.EntityRemoved != null)
+            {
+                this.EntityRemoved(this, entity);
             }
         }
 
@@ -120,6 +156,12 @@
 
             // Add the component
             componentsByEntity.Add(entity, component);
+
+            // Fire event
+            if (this.ComponentAdded != null)
+            {
+                this.ComponentAdded(this, entity, component);
+            }
         }
 
         /// <summary>
@@ -131,8 +173,15 @@
         {
             if (this.componentsByType.ContainsKey(component.GetType()))
             {
+                // Remove the component
                 Dictionary<int, IComponent> componentsByEntity = this.componentsByType[component.GetType()];
                 componentsByEntity.Remove(entity);
+
+                // Fire event
+                if (this.ComponentRemoved != null)
+                {
+                    this.ComponentRemoved(this, entity, component);
+                }
             }
             else
             {
