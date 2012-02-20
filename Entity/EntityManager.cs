@@ -116,32 +116,38 @@
         /// <param name="entity">The entity to remove.</param>
         public void RemoveEntity(int entity)
         {
+            // Get the list of components with this entity
+            var componentsToRemove = new List<Dictionary<int, IComponent>>();
+
             lock (this.newEntityLock)
             {
                 // Remove this entity from the internal list
                 this.existingEntities.Remove(entity);
 
-                // Remove any references to this entity from the component map
+                // Fire removal event for each component
                 foreach (Dictionary<int, IComponent> componentsByEntity in this.componentsByType.Values)
                 {
                     if (componentsByEntity.ContainsKey(entity))
                     {
-                        // Get the component being removed
-                        IComponent component = componentsByEntity[entity];
-
-                        // Remove the component for this entity
-                        componentsByEntity.Remove(entity);
+                        // Add the component to the removal list
+                        componentsToRemove.Add(componentsByEntity);
 
                         // Fire event
                         if (this.ComponentRemoved != null)
                         {
-                            this.ComponentRemoved(this, entity, component);
+                            this.ComponentRemoved(this, entity, componentsByEntity[entity]);
                         }
                     }
                 }
+
+                // Now actually remove the components
+                foreach (Dictionary<int, IComponent> componentsByEntity in componentsToRemove)
+                {
+                    componentsByEntity.Remove(entity);
+                }
             }
 
-            // Fire event
+            // Fire entity removed event
             if (this.EntityRemoved != null)
             {
                 this.EntityRemoved(this, entity);
