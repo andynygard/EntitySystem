@@ -1,13 +1,11 @@
 CREATE TABLE [Component] (
 	"Id"		integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	"ClassName"		varchar(250) NOT NULL COLLATE NOCASE
-
 );
 
 CREATE TABLE [Entity] (
 	"Id"		integer NOT NULL,
     PRIMARY KEY ([Id])
-
 );
 
 CREATE TABLE [EntityTemplate] (
@@ -23,10 +21,10 @@ CREATE UNIQUE INDEX [EntityTemplate_UX_EntityTemplate]
 ON [EntityTemplate]
 ([EntityId]);
 
-CREATE TABLE "Entity_Component" (
+CREATE TABLE "EntityComponent" (
+	"Id"		integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	"EntityId"		integer NOT NULL,
-	"ComponentId"		integer NOT NULL,
-    PRIMARY KEY ([EntityId], [ComponentId])
+	"ComponentId"		integer NOT NULL
 ,
     FOREIGN KEY ([ComponentId])
         REFERENCES [Component]([Id]),
@@ -34,33 +32,32 @@ CREATE TABLE "Entity_Component" (
         REFERENCES [Entity]([Id])
 );
 
-CREATE TABLE "Entity_Component_ArrayData" (
-	"EntityId"		integer NOT NULL,
+CREATE UNIQUE INDEX [EntityComponent_UX_EntityComponent]
+ON [EntityComponent]
+([EntityId], [ComponentId]);
+
+CREATE TABLE "EntityComponent_ArrayData" (
+	"EntityComponentId"		integer NOT NULL,
 	"ComponentId"		integer NOT NULL,
 	"Property"		varchar(50) NOT NULL COLLATE NOCASE,
 	"Index"		integer NOT NULL,
 	"Value"		varchar NOT NULL COLLATE NOCASE,
 	"DataType"		varchar(250) NOT NULL COLLATE NOCASE,
-    PRIMARY KEY ([EntityId], [ComponentId], [Property], [Index])
+    PRIMARY KEY ([EntityComponentId], [Property], [Index])
 ,
-    FOREIGN KEY ([ComponentId])
-        REFERENCES [Component]([Id]),
-    FOREIGN KEY ([EntityId])
-        REFERENCES [Entity]([Id])
+    FOREIGN KEY ([EntityComponentId])
+        REFERENCES [EntityComponent]([Id])
 );
 
-CREATE TABLE "Entity_Component_Data" (
-	"EntityId"		integer NOT NULL,
-	"ComponentId"		integer NOT NULL,
+CREATE TABLE "EntityComponent_Data" (
+	"EntityComponentId"		integer NOT NULL,
 	"Property"		varchar(50) NOT NULL COLLATE NOCASE,
 	"Value"		varchar NOT NULL COLLATE NOCASE,
 	"DataType"		varchar(250) NOT NULL COLLATE NOCASE,
-    PRIMARY KEY ([EntityId], [ComponentId], [Property])
+    PRIMARY KEY ([EntityComponentId], [Property])
 ,
-    FOREIGN KEY ([ComponentId])
-        REFERENCES [Component]([Id]),
-    FOREIGN KEY ([EntityId])
-        REFERENCES [Entity]([Id])
+    FOREIGN KEY ([EntityComponentId])
+        REFERENCES [EntityComponent]([Id])
 );
 
 CREATE TABLE [Level] (
@@ -68,7 +65,6 @@ CREATE TABLE [Level] (
 	"Number"		integer NOT NULL,
 	"Name"		varchar(50) NOT NULL COLLATE NOCASE,
 	"Description"		varchar(250) NOT NULL COLLATE NOCASE
-
 );
 
 CREATE UNIQUE INDEX [Level_UX_Level]
