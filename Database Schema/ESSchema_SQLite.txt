@@ -1,0 +1,155 @@
+CREATE TABLE [Component] (
+	"Id"		integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	"ClassName"		varchar(250) NOT NULL COLLATE NOCASE
+
+);
+
+CREATE TRIGGER [fkd_EntityComponentData_ComponentId_Component_Id] Before Delete ON [Component] BEGIN SELECT RAISE(ROLLBACK, 'delete on table Component violates foreign key constraint fkd_EntityComponentData_ComponentId_Component_Id') WHERE (SELECT ComponentId FROM EntityComponentData WHERE ComponentId = OLD.Id) IS NOT NULL;  END;
+
+CREATE TRIGGER [fkd_EntityComponentArrayData_ComponentId_Component_Id] Before Delete ON [Component] BEGIN SELECT RAISE(ROLLBACK, 'delete on table Component violates foreign key constraint fkd_EntityComponentArrayData_ComponentId_Component_Id') WHERE (SELECT ComponentId FROM EntityComponentArrayData WHERE ComponentId = OLD.Id) IS NOT NULL;  END;
+
+
+CREATE TABLE [Entity] (
+	"Id"		integer NOT NULL,
+    PRIMARY KEY ([Id])
+
+);
+
+CREATE TRIGGER [fkd_SavedGame_EntityId_Entity_Id] Before Delete ON [Entity] BEGIN SELECT RAISE(ROLLBACK, 'delete on table Entity violates foreign key constraint fkd_SavedGame_EntityId_Entity_Id') WHERE (SELECT EntityId FROM SavedGame WHERE EntityId = OLD.Id) IS NOT NULL;  END;
+
+CREATE TRIGGER [fkd_EntityComponentData_EntityId_Entity_Id] Before Delete ON [Entity] BEGIN SELECT RAISE(ROLLBACK, 'delete on table Entity violates foreign key constraint fkd_EntityComponentData_EntityId_Entity_Id') WHERE (SELECT EntityId FROM EntityComponentData WHERE EntityId = OLD.Id) IS NOT NULL;  END;
+
+CREATE TRIGGER [fkd_EntityComponentArrayData_EntityId_Entity_Id] Before Delete ON [Entity] BEGIN SELECT RAISE(ROLLBACK, 'delete on table Entity violates foreign key constraint fkd_EntityComponentArrayData_EntityId_Entity_Id') WHERE (SELECT EntityId FROM EntityComponentArrayData WHERE EntityId = OLD.Id) IS NOT NULL;  END;
+
+CREATE TRIGGER [fkd_EntityTemplate_EntityId_Entity_Id] Before Delete ON [Entity] BEGIN SELECT RAISE(ROLLBACK, 'delete on table Entity violates foreign key constraint fkd_EntityTemplate_EntityId_Entity_Id') WHERE (SELECT EntityId FROM EntityTemplate WHERE EntityId = OLD.Id) IS NOT NULL;  END;
+
+
+CREATE TABLE [EntityComponentArrayData] (
+	"EntityId"		integer NOT NULL,
+	"ComponentId"		integer NOT NULL,
+	"Property"		varchar(50) NOT NULL COLLATE NOCASE,
+	"Index"		integer NOT NULL,
+	"Value"		varchar NOT NULL COLLATE NOCASE,
+	"DataType"		varchar(250) NOT NULL COLLATE NOCASE,
+    PRIMARY KEY ([EntityId], [ComponentId], [Property], [Index])
+,
+    FOREIGN KEY ([ComponentId])
+        REFERENCES [Component]([Id]),
+    FOREIGN KEY ([EntityId])
+        REFERENCES [Entity]([Id])
+);
+
+CREATE TRIGGER [fki_EntityComponentArrayData_ComponentId_Component_Id] Before Insert ON [EntityComponentArrayData] BEGIN SELECT RAISE(ROLLBACK, 'insert on table EntityComponentArrayData violates foreign key constraint fki_EntityComponentArrayData_ComponentId_Component_Id') WHERE (SELECT Id FROM Component WHERE Id = NEW.ComponentId) IS NULL;  END;
+
+CREATE TRIGGER [fku_EntityComponentArrayData_ComponentId_Component_Id] Before Update ON [EntityComponentArrayData] BEGIN SELECT RAISE(ROLLBACK, 'update on table EntityComponentArrayData violates foreign key constraint fku_EntityComponentArrayData_ComponentId_Component_Id') WHERE (SELECT Id FROM Component WHERE Id = NEW.ComponentId) IS NULL;  END;
+
+CREATE TRIGGER [fki_EntityComponentArrayData_EntityId_Entity_Id] Before Insert ON [EntityComponentArrayData] BEGIN SELECT RAISE(ROLLBACK, 'insert on table EntityComponentArrayData violates foreign key constraint fki_EntityComponentArrayData_EntityId_Entity_Id') WHERE (SELECT Id FROM Entity WHERE Id = NEW.EntityId) IS NULL;  END;
+
+CREATE TRIGGER [fku_EntityComponentArrayData_EntityId_Entity_Id] Before Update ON [EntityComponentArrayData] BEGIN SELECT RAISE(ROLLBACK, 'update on table EntityComponentArrayData violates foreign key constraint fku_EntityComponentArrayData_EntityId_Entity_Id') WHERE (SELECT Id FROM Entity WHERE Id = NEW.EntityId) IS NULL;  END;
+
+
+CREATE TABLE [EntityComponentData] (
+	"EntityId"		integer NOT NULL,
+	"ComponentId"		integer NOT NULL,
+	"Property"		varchar(50) NOT NULL COLLATE NOCASE,
+	"Value"		varchar NOT NULL COLLATE NOCASE,
+	"DataType"		varchar(250) NOT NULL COLLATE NOCASE,
+    PRIMARY KEY ([EntityId], [ComponentId], [Property])
+,
+    FOREIGN KEY ([ComponentId])
+        REFERENCES [Component]([Id]),
+    FOREIGN KEY ([EntityId])
+        REFERENCES [Entity]([Id])
+);
+
+CREATE TRIGGER [fki_EntityComponentData_ComponentId_Component_Id] Before Insert ON [EntityComponentData] BEGIN SELECT RAISE(ROLLBACK, 'insert on table EntityComponentData violates foreign key constraint fki_EntityComponentData_ComponentId_Component_Id') WHERE (SELECT Id FROM Component WHERE Id = NEW.ComponentId) IS NULL;  END;
+
+CREATE TRIGGER [fku_EntityComponentData_ComponentId_Component_Id] Before Update ON [EntityComponentData] BEGIN SELECT RAISE(ROLLBACK, 'update on table EntityComponentData violates foreign key constraint fku_EntityComponentData_ComponentId_Component_Id') WHERE (SELECT Id FROM Component WHERE Id = NEW.ComponentId) IS NULL;  END;
+
+CREATE TRIGGER [fki_EntityComponentData_EntityId_Entity_Id] Before Insert ON [EntityComponentData] BEGIN SELECT RAISE(ROLLBACK, 'insert on table EntityComponentData violates foreign key constraint fki_EntityComponentData_EntityId_Entity_Id') WHERE (SELECT Id FROM Entity WHERE Id = NEW.EntityId) IS NULL;  END;
+
+CREATE TRIGGER [fku_EntityComponentData_EntityId_Entity_Id] Before Update ON [EntityComponentData] BEGIN SELECT RAISE(ROLLBACK, 'update on table EntityComponentData violates foreign key constraint fku_EntityComponentData_EntityId_Entity_Id') WHERE (SELECT Id FROM Entity WHERE Id = NEW.EntityId) IS NULL;  END;
+
+
+CREATE TABLE [EntityTemplate] (
+	"Id"		integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	"EntityId"		integer NOT NULL,
+	"Name"		varchar(50) NOT NULL COLLATE NOCASE
+,
+    FOREIGN KEY ([EntityId])
+        REFERENCES [Entity]([Id])
+);
+
+CREATE UNIQUE INDEX [EntityTemplate_UX_EntityTemplate]
+ON [EntityTemplate]
+([EntityId]);
+
+CREATE TRIGGER [fki_EntityTemplate_EntityId_Entity_Id] Before Insert ON [EntityTemplate] BEGIN SELECT RAISE(ROLLBACK, 'insert on table EntityTemplate violates foreign key constraint fki_EntityTemplate_EntityId_Entity_Id') WHERE (SELECT Id FROM Entity WHERE Id = NEW.EntityId) IS NULL;  END;
+
+CREATE TRIGGER [fku_EntityTemplate_EntityId_Entity_Id] Before Update ON [EntityTemplate] BEGIN SELECT RAISE(ROLLBACK, 'update on table EntityTemplate violates foreign key constraint fku_EntityTemplate_EntityId_Entity_Id') WHERE (SELECT Id FROM Entity WHERE Id = NEW.EntityId) IS NULL;  END;
+
+CREATE TRIGGER [fkd_Level_EntityTemplate_EntityTemplateId_EntityTemplate_Id] Before Delete ON [EntityTemplate] BEGIN SELECT RAISE(ROLLBACK, 'delete on table EntityTemplate violates foreign key constraint fkd_Level_EntityTemplate_EntityTemplateId_EntityTemplate_Id') WHERE (SELECT EntityTemplateId FROM Level_EntityTemplate WHERE EntityTemplateId = OLD.Id) IS NOT NULL;  END;
+
+
+CREATE TABLE [Level] (
+	"Id"		integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	"Number"		integer NOT NULL,
+	"Name"		varchar(50) NOT NULL COLLATE NOCASE,
+	"Description"		varchar(250) NOT NULL COLLATE NOCASE
+
+);
+
+CREATE UNIQUE INDEX [Level_UX_Level]
+ON [Level]
+([Number]);
+
+CREATE TRIGGER [fkd_SavedGame_LevelId_Level_Id] Before Delete ON [Level] BEGIN SELECT RAISE(ROLLBACK, 'delete on table Level violates foreign key constraint fkd_SavedGame_LevelId_Level_Id') WHERE (SELECT LevelId FROM SavedGame WHERE LevelId = OLD.Id) IS NOT NULL;  END;
+
+CREATE TRIGGER [fkd_Level_EntityTemplate_LevelId_Level_Id] Before Delete ON [Level] BEGIN SELECT RAISE(ROLLBACK, 'delete on table Level violates foreign key constraint fkd_Level_EntityTemplate_LevelId_Level_Id') WHERE (SELECT LevelId FROM Level_EntityTemplate WHERE LevelId = OLD.Id) IS NOT NULL;  END;
+
+
+CREATE TABLE [Level_EntityTemplate] (
+	"LevelId"		integer NOT NULL,
+	"EntityTemplateId"		integer NOT NULL,
+    PRIMARY KEY ([LevelId], [EntityTemplateId])
+,
+    FOREIGN KEY ([EntityTemplateId])
+        REFERENCES [EntityTemplate]([Id]),
+    FOREIGN KEY ([LevelId])
+        REFERENCES [Level]([Id])
+);
+
+CREATE TRIGGER [fki_Level_EntityTemplate_EntityTemplateId_EntityTemplate_Id] Before Insert ON [Level_EntityTemplate] BEGIN SELECT RAISE(ROLLBACK, 'insert on table Level_EntityTemplate violates foreign key constraint fki_Level_EntityTemplate_EntityTemplateId_EntityTemplate_Id') WHERE (SELECT Id FROM EntityTemplate WHERE Id = NEW.EntityTemplateId) IS NULL;  END;
+
+CREATE TRIGGER [fku_Level_EntityTemplate_EntityTemplateId_EntityTemplate_Id] Before Update ON [Level_EntityTemplate] BEGIN SELECT RAISE(ROLLBACK, 'update on table Level_EntityTemplate violates foreign key constraint fku_Level_EntityTemplate_EntityTemplateId_EntityTemplate_Id') WHERE (SELECT Id FROM EntityTemplate WHERE Id = NEW.EntityTemplateId) IS NULL;  END;
+
+CREATE TRIGGER [fki_Level_EntityTemplate_LevelId_Level_Id] Before Insert ON [Level_EntityTemplate] BEGIN SELECT RAISE(ROLLBACK, 'insert on table Level_EntityTemplate violates foreign key constraint fki_Level_EntityTemplate_LevelId_Level_Id') WHERE (SELECT Id FROM Level WHERE Id = NEW.LevelId) IS NULL;  END;
+
+CREATE TRIGGER [fku_Level_EntityTemplate_LevelId_Level_Id] Before Update ON [Level_EntityTemplate] BEGIN SELECT RAISE(ROLLBACK, 'update on table Level_EntityTemplate violates foreign key constraint fku_Level_EntityTemplate_LevelId_Level_Id') WHERE (SELECT Id FROM Level WHERE Id = NEW.LevelId) IS NULL;  END;
+
+
+CREATE TABLE [SavedGame] (
+	"Id"		integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	"Name"		varchar(50) NOT NULL COLLATE NOCASE,
+	"LevelId"		integer NOT NULL,
+	"EntityId"		integer NOT NULL
+,
+    FOREIGN KEY ([EntityId])
+        REFERENCES [Entity]([Id]),
+    FOREIGN KEY ([LevelId])
+        REFERENCES [Level]([Id])
+);
+
+CREATE UNIQUE INDEX [SavedGame_UX_SavedGame]
+ON [SavedGame]
+([Name], [LevelId], [EntityId]);
+
+CREATE TRIGGER [fki_SavedGame_EntityId_Entity_Id] Before Insert ON [SavedGame] BEGIN SELECT RAISE(ROLLBACK, 'insert on table SavedGame violates foreign key constraint fki_SavedGame_EntityId_Entity_Id') WHERE (SELECT Id FROM Entity WHERE Id = NEW.EntityId) IS NULL;  END;
+
+CREATE TRIGGER [fku_SavedGame_EntityId_Entity_Id] Before Update ON [SavedGame] BEGIN SELECT RAISE(ROLLBACK, 'update on table SavedGame violates foreign key constraint fku_SavedGame_EntityId_Entity_Id') WHERE (SELECT Id FROM Entity WHERE Id = NEW.EntityId) IS NULL;  END;
+
+CREATE TRIGGER [fki_SavedGame_LevelId_Level_Id] Before Insert ON [SavedGame] BEGIN SELECT RAISE(ROLLBACK, 'insert on table SavedGame violates foreign key constraint fki_SavedGame_LevelId_Level_Id') WHERE (SELECT Id FROM Level WHERE Id = NEW.LevelId) IS NULL;  END;
+
+CREATE TRIGGER [fku_SavedGame_LevelId_Level_Id] Before Update ON [SavedGame] BEGIN SELECT RAISE(ROLLBACK, 'update on table SavedGame violates foreign key constraint fku_SavedGame_LevelId_Level_Id') WHERE (SELECT Id FROM Level WHERE Id = NEW.LevelId) IS NULL;  END;
+
+
