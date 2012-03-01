@@ -10,7 +10,31 @@ CREATE TABLE [Entity] (
 
 );
 
-CREATE TABLE [EntityComponentArrayData] (
+CREATE TABLE [EntityTemplate] (
+	"Id"		integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	"EntityId"		integer NOT NULL,
+	"Name"		varchar(50) NOT NULL COLLATE NOCASE
+,
+    FOREIGN KEY ([EntityId])
+        REFERENCES [Entity]([Id])
+);
+
+CREATE UNIQUE INDEX [EntityTemplate_UX_EntityTemplate]
+ON [EntityTemplate]
+([EntityId]);
+
+CREATE TABLE "Entity_Component" (
+	"EntityId"		integer NOT NULL,
+	"ComponentId"		integer NOT NULL,
+    PRIMARY KEY ([EntityId], [ComponentId])
+,
+    FOREIGN KEY ([ComponentId])
+        REFERENCES [Component]([Id]),
+    FOREIGN KEY ([EntityId])
+        REFERENCES [Entity]([Id])
+);
+
+CREATE TABLE "Entity_Component_ArrayData" (
 	"EntityId"		integer NOT NULL,
 	"ComponentId"		integer NOT NULL,
 	"Property"		varchar(50) NOT NULL COLLATE NOCASE,
@@ -25,7 +49,7 @@ CREATE TABLE [EntityComponentArrayData] (
         REFERENCES [Entity]([Id])
 );
 
-CREATE TABLE [EntityComponentData] (
+CREATE TABLE "Entity_Component_Data" (
 	"EntityId"		integer NOT NULL,
 	"ComponentId"		integer NOT NULL,
 	"Property"		varchar(50) NOT NULL COLLATE NOCASE,
@@ -38,19 +62,6 @@ CREATE TABLE [EntityComponentData] (
     FOREIGN KEY ([EntityId])
         REFERENCES [Entity]([Id])
 );
-
-CREATE TABLE [EntityTemplate] (
-	"Id"		integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-	"EntityId"		integer NOT NULL,
-	"Name"		varchar(50) NOT NULL COLLATE NOCASE
-,
-    FOREIGN KEY ([EntityId])
-        REFERENCES [Entity]([Id])
-);
-
-CREATE UNIQUE INDEX [EntityTemplate_UX_EntityTemplate]
-ON [EntityTemplate]
-([EntityId]);
 
 CREATE TABLE [Level] (
 	"Id"		integer PRIMARY KEY AUTOINCREMENT NOT NULL,
