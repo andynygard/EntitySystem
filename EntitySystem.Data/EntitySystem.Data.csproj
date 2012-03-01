@@ -8,7 +8,7 @@
     <ProjectGuid>{D8857024-A665-4263-AC54-68CC5C83204C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>EntitySystem.DB</RootNamespace>
+    <RootNamespace>EntitySystem.Data</RootNamespace>
     <AssemblyName>EntitySystem.Data</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -40,7 +40,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EntitySystemDataAdapter.cs" />
     <Compile Include="IEntitySystemDataAdapter.cs" />
+    <Compile Include="LevelInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

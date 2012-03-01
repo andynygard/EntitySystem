@@ -1,6 +1,5 @@
 ﻿namespace EntitySystem.Data
 {
-    using System.Collections.Generic;
     using EntitySystem.Entity;
 
     /// <summary>
@@ -9,13 +8,13 @@
     public interface IEntitySystemDataAdapter
     {
         /// <summary>
-        /// Get the list of levels.
+        /// Get the available levels.
         /// </summary>
-        /// <returns>A dictionary containing the level numbers and names.</returns>
-        Dictionary<int, string> GetLevels();
+        /// <returns>An array of level information.</returns>
+        LevelInfo[] GetLevels();
 
         /// <summary>
-        /// Load the level with the given sequence number.
+        /// Load the level with the given level number.
         /// </summary>
         /// <param name="entityManager">The entity manager to initialise.</param>
         /// <param name="levelNum">The level number.</param>
@@ -23,7 +22,7 @@
         bool LoadLevel(EntityManager entityManager, int levelNum);
 
         /// <summary>
-        /// Save the level with the given sequence number.
+        /// Save the level with the given level number.
         /// </summary>
         /// <param name="entityManager">The entity manager to initialise.</param>
         /// <param name="levelNum">The level number.</param>
