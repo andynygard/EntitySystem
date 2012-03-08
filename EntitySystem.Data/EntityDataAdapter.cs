@@ -5,9 +5,9 @@
     using EntitySystem.Entity;
 
     /// <summary>
-    /// Serves a bridge between an EntityManager and a data source for loading and saving level data.
+    /// Serves a bridge between the entity system and a data source for loading and saving level data.
     /// </summary>
-    public class EntitySystemDataAdapter : IEntitySystemDataAdapter
+    public class EntityDataAdapter : IEntityDataAdapter
     {
         /// <summary>
         /// The database connection.
@@ -15,21 +15,21 @@
         private DbConnection connection;
 
         /// <summary>
-        /// Initializes a new instance of the EntitySystemDataAdapter class.
+        /// Initializes a new instance of the EntityDataAdapter class.
         /// </summary>
         /// <param name="transformer">The entity system transformer.</param>
         /// <param name="connection">The database connection.</param>
-        public EntitySystemDataAdapter(IEntitySystemTransformer transformer, DbConnection connection)
+        public EntityDataAdapter(IEntityTransformer transformer, DbConnection connection)
         {
             this.Transformer = transformer;
             this.connection = connection;
         }
 
         /// <summary>
-        /// Gets or sets the entity system transformer that is responsible for transforming an EntityManager into a
-        /// serializable or deserializable state.
+        /// Gets or sets the IEntityTransformer that is responsible for transforming entities into a serializable or
+        /// deserializable state.
         /// </summary>
-        public IEntitySystemTransformer Transformer { get; set; }
+        public IEntityTransformer Transformer { get; set; }
 
         /// <summary>
         /// Get the available levels.
@@ -43,7 +43,7 @@
         /// <summary>
         /// Load the level with the given level number.
         /// </summary>
-        /// <param name="entityManager">The entity manager to initialise.</param>
+        /// <param name="entityManager">The entity manager to be populated.</param>
         /// <param name="levelNum">The level number.</param>
         /// <returns>True if the level was loaded.</returns>
         public bool LoadLevel(EntityManager entityManager, int levelNum)
@@ -54,7 +54,7 @@
         /// <summary>
         /// Save the level with the given level number.
         /// </summary>
-        /// <param name="entityManager">The entity manager to initialise.</param>
+        /// <param name="entityManager">The entity manager of the level to be saved.</param>
         /// <param name="levelNum">The level number.</param>
         /// <returns>True if the level was saved.</returns>
         public bool SaveLevel(EntityManager entityManager, int levelNum)

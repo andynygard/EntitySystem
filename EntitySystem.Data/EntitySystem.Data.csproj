@@ -40,9 +40,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EntitySystemDataAdapter.cs" />
-    <Compile Include="IEntitySystemDataAdapter.cs" />
-    <Compile Include="IEntitySystemTransformer.cs" />
+    <Compile Include="EntityDataAdapter.cs" />
+    <Compile Include="IEntityDataAdapter.cs" />
+    <Compile Include="IEntityTransformer.cs" />
     <Compile Include="LevelInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -5,13 +5,13 @@
     /// <summary>
     /// This interface serves a bridge between an EntityManager and a data source for loading and saving level data.
     /// </summary>
-    public interface IEntitySystemDataAdapter
+    public interface IEntityDataAdapter
     {
         /// <summary>
-        /// Gets or sets the entity system transformer that is responsible for transforming an EntityManager into a
-        /// serializable or deserializable state.
+        /// Gets or sets the IEntityTransformer that is responsible for transforming entities into a serializable or
+        /// deserializable state.
         /// </summary>
-        IEntitySystemTransformer Transformer { get; set; }
+        IEntityTransformer Transformer { get; set; }
 
         /// <summary>
         /// Get the available levels.
@@ -22,7 +22,7 @@
         /// <summary>
         /// Load the level with the given level number.
         /// </summary>
-        /// <param name="entityManager">The entity manager to initialise.</param>
+        /// <param name="entityManager">The entity manager to be populated.</param>
         /// <param name="levelNum">The level number.</param>
         /// <returns>True if the level was loaded.</returns>
         bool LoadLevel(EntityManager entityManager, int levelNum);
@@ -30,7 +30,7 @@
         /// <summary>
         /// Save the level with the given level number.
         /// </summary>
-        /// <param name="entityManager">The entity manager to initialise.</param>
+        /// <param name="entityManager">The entity manager of the level to be saved.</param>
         /// <param name="levelNum">The level number.</param>
         /// <returns>True if the level was saved.</returns>
         bool SaveLevel(EntityManager entityManager, int levelNum);
