@@ -17,11 +17,19 @@
         /// <summary>
         /// Initializes a new instance of the EntitySystemDataAdapter class.
         /// </summary>
+        /// <param name="transformer">The entity system transformer.</param>
         /// <param name="connection">The database connection.</param>
-        public EntitySystemDataAdapter(DbConnection connection)
+        public EntitySystemDataAdapter(IEntitySystemTransformer transformer, DbConnection connection)
         {
+            this.Transformer = transformer;
             this.connection = connection;
         }
+
+        /// <summary>
+        /// Gets the entity system transformer that is responsible for transforming an EntityManager into a serializable
+        /// or deserializable state.
+        /// </summary>
+        public IEntitySystemTransformer Transformer { get; set; }
 
         /// <summary>
         /// Get the available levels.
