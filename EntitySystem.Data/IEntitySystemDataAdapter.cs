@@ -8,8 +8,8 @@
     public interface IEntitySystemDataAdapter
     {
         /// <summary>
-        /// Gets the entity system transformer that is responsible for transforming an EntityManager into a serializable
-        /// or deserializable state.
+        /// Gets or sets the entity system transformer that is responsible for transforming an EntityManager into a
+        /// serializable or deserializable state.
         /// </summary>
         IEntitySystemTransformer Transformer { get; set; }
 
