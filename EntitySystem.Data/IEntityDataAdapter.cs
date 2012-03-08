@@ -3,7 +3,7 @@
     using EntitySystem.Entity;
 
     /// <summary>
-    /// This interface serves a bridge between an EntityManager and a data source for loading and saving level data.
+    /// This interface serves a bridge between the entity system and a data source for loading and saving level data.
     /// </summary>
     public interface IEntityDataAdapter
     {
