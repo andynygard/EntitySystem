@@ -3,7 +3,7 @@
     using EntitySystem.Entity;
 
     /// <summary>
-    /// Responsible for transforming an EntityManager into a state to be serialized or deserialized. The reason for this
+    /// Responsible for transforming an EntityManager into a serializable or deserializable state. The reason for this
     /// is that the structure of the EntityManager can be different at runtime compared to when it is stored as data (as
     /// some components only exist to facilitate the initialisation of the functional components).
     /// <para />
