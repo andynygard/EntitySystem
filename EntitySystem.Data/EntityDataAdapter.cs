@@ -17,9 +17,9 @@
         /// <summary>
         /// Initializes a new instance of the EntityDataAdapter class.
         /// </summary>
-        /// <param name="transformer">The entity system transformer.</param>
         /// <param name="connection">The database connection.</param>
-        public EntityDataAdapter(IEntityTransformer transformer, DbConnection connection)
+        /// <param name="transformer">The entity system transformer.</param>
+        public EntityDataAdapter(DbConnection connection, IEntityTransformer transformer)
         {
             this.Transformer = transformer;
             this.connection = connection;
