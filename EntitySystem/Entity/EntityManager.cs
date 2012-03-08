@@ -78,7 +78,7 @@
         /// <summary>
         /// Fires when a component is about to be removed from the EntityManager.
         /// </summary>
-        public event EntityComponentEvent PreComponentRemoved;
+        public event EntityComponentEvent ComponentRemoving;
 
         #endregion
 
@@ -133,9 +133,9 @@
                         componentsToRemove.Add(componentsByEntity);
 
                         // Fire event
-                        if (this.PreComponentRemoved != null)
+                        if (this.ComponentRemoving != null)
                         {
-                            this.PreComponentRemoved(this, entity, componentsByEntity[entity]);
+                            this.ComponentRemoving(this, entity, componentsByEntity[entity]);
                         }
                     }
                 }
@@ -197,9 +197,9 @@
                 componentsByEntity.Remove(entity);
 
                 // Fire event
-                if (this.PreComponentRemoved != null)
+                if (this.ComponentRemoving != null)
                 {
-                    this.PreComponentRemoved(this, entity, component);
+                    this.ComponentRemoving(this, entity, component);
                 }
             }
             else
