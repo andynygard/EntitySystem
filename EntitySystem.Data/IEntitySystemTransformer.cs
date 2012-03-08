@@ -8,7 +8,7 @@
     /// some components only exist to facilitate the initialisation of the functional components).
     /// <para />
     /// The class implementing this interface is responsible for providing the ability to transform an EntityManager
-    /// from its live runtime state to its stored-state and vice versa.
+    /// from its live runtime state to its stored state and vice versa.
     /// </summary>
     public interface IEntitySystemTransformer
     {
