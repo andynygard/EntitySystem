@@ -40,7 +40,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EntityDataAdapter.cs" />
+    <Compile Include="Db\DbConstant.cs" />
+    <Compile Include="Db\DbEntityDataAdapter.cs" />
+    <Compile Include="Db\EntityDataSet.cs">
+      <DependentUpon>EntityDataSet.xsd</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Db\EntityDataSet.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EntityDataSet.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="EntityDataSetAdapter.cs" />
     <Compile Include="IEntityDataAdapter.cs" />
     <Compile Include="IEntityTransformer.cs" />
     <Compile Include="LevelInfo.cs" />
@@ -51,6 +62,19 @@
       <Project>{AE9C57EC-C52F-4F54-BB99-BF7C37DAD4E1}</Project>
       <Name>EntitySystem %28EntitySystem\EntitySystem%29</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Db\EntityDataSet.xsc">
+      <DependentUpon>EntityDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="Db\EntityDataSet.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>EntityDataSet.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Db\EntityDataSet.xss">
+      <DependentUpon>EntityDataSet.xsd</DependentUpon>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
