@@ -16,12 +16,12 @@
         /// Transform the entities in the given EntityManager into a state that is ready for serialization.
         /// </summary>
         /// <param name="entityManager">The EntityManager to transform.</param>
-        void TransformForSerialization(EntityManager entityManager);
+        void TransformForLoad(EntityManager entityManager);
 
         /// <summary>
         /// Transform the entities in the given EntityManager into a state that is ready for deserialization.
         /// </summary>
         /// <param name="entityManager">The EntityManager to transform.</param>
-        void TransformForDeserialization(EntityManager entityManager);
+        void TransformForSave(EntityManager entityManager);
     }
 }
