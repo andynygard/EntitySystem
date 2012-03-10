@@ -1,16 +1,10 @@
-CREATE TABLE [Component] (
-	"Id"		integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-	"ClassName"		varchar(250) NOT NULL COLLATE NOCASE
-);
-
 CREATE TABLE [Entity] (
-	"Id"		integer NOT NULL,
-    PRIMARY KEY ([Id])
+	"Id"	integer PRIMARY KEY NOT NULL
 );
 
 CREATE TABLE [EntityTemplate] (
 	"Id"		integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-	"EntityId"		integer NOT NULL,
+	"EntityId"	integer NOT NULL,
 	"Name"		varchar(50) NOT NULL COLLATE NOCASE
 ,
     FOREIGN KEY ([EntityId])
@@ -21,10 +15,15 @@ CREATE UNIQUE INDEX [EntityTemplate_UX_EntityTemplate]
 ON [EntityTemplate]
 ([EntityId]);
 
-CREATE TABLE "EntityComponent" (
+CREATE TABLE [Component] (
 	"Id"		integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	"ClassName"	varchar(250) NOT NULL COLLATE NOCASE
+);
+
+CREATE TABLE "EntityComponent" (
+	"Id"			integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	"EntityId"		integer NOT NULL,
-	"ComponentId"		integer NOT NULL
+	"ComponentId"	integer NOT NULL
 ,
     FOREIGN KEY ([ComponentId])
         REFERENCES [Component]([Id]),
@@ -36,64 +35,72 @@ CREATE UNIQUE INDEX [EntityComponent_UX_EntityComponent]
 ON [EntityComponent]
 ([EntityId], [ComponentId]);
 
-CREATE TABLE "EntityComponent_ArrayData" (
-	"EntityComponentId"		integer NOT NULL,
-	"ComponentId"		integer NOT NULL,
-	"Property"		varchar(50) NOT NULL COLLATE NOCASE,
-	"Index"		integer NOT NULL,
-	"Value"		varchar NOT NULL COLLATE NOCASE,
-	"DataType"		varchar(250) NOT NULL COLLATE NOCASE,
-    PRIMARY KEY ([EntityComponentId], [Property], [Index])
-,
-    FOREIGN KEY ([EntityComponentId])
-        REFERENCES [EntityComponent]([Id])
-);
-
 CREATE TABLE "EntityComponent_Data" (
-	"EntityComponentId"		integer NOT NULL,
-	"Property"		varchar(50) NOT NULL COLLATE NOCASE,
-	"Value"		varchar NOT NULL COLLATE NOCASE,
-	"DataType"		varchar(250) NOT NULL COLLATE NOCASE,
+	"EntityComponentId"	integer NOT NULL,
+	"Property"			varchar(50) NOT NULL COLLATE NOCASE,
+	"Value"				varchar NOT NULL COLLATE NOCASE,
+	"DataType"			varchar(250) NOT NULL COLLATE NOCASE,
     PRIMARY KEY ([EntityComponentId], [Property])
 ,
     FOREIGN KEY ([EntityComponentId])
         REFERENCES [EntityComponent]([Id])
 );
 
+CREATE TABLE "EntityComponent_ArrayData" (
+	"EntityComponentId"	integer NOT NULL,
+	"ComponentId"		integer NOT NULL,
+	"Property"			varchar(50) NOT NULL COLLATE NOCASE,
+	"Index"				integer NOT NULL,
+	"Value"				varchar NOT NULL COLLATE NOCASE,
+	"DataType"			varchar(250) NOT NULL COLLATE NOCASE,
+    PRIMARY KEY ([EntityComponentId], [Property], [Index])
+,
+    FOREIGN KEY ([EntityComponentId])
+        REFERENCES [EntityComponent]([Id])
+);
+
 CREATE TABLE [Level] (
-	"Id"		integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	"Id"			integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	"Number"		integer NOT NULL,
-	"Name"		varchar(50) NOT NULL COLLATE NOCASE,
-	"Description"		varchar(250) NOT NULL COLLATE NOCASE
+	"Name"			varchar(50) NOT NULL COLLATE NOCASE,
+	"Description"	varchar(250) NOT NULL COLLATE NOCASE
 );
 
 CREATE UNIQUE INDEX [Level_UX_Level]
 ON [Level]
 ([Number]);
 
-CREATE TABLE [Level_EntityTemplate] (
+CREATE TABLE [Level_Entity] (
 	"LevelId"		integer NOT NULL,
-	"EntityTemplateId"		integer NOT NULL,
-    PRIMARY KEY ([LevelId], [EntityTemplateId])
+	"EntityId"		integer NOT NULL,
+    PRIMARY KEY ([LevelId], [EntityId])
 ,
-    FOREIGN KEY ([EntityTemplateId])
-        REFERENCES [EntityTemplate]([Id]),
     FOREIGN KEY ([LevelId])
-        REFERENCES [Level]([Id])
+        REFERENCES [Level]([Id]),
+    FOREIGN KEY ([EntityId])
+        REFERENCES [EntityId]([Id])
 );
 
 CREATE TABLE [SavedGame] (
 	"Id"		integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	"Name"		varchar(50) NOT NULL COLLATE NOCASE,
-	"LevelId"		integer NOT NULL,
-	"EntityId"		integer NOT NULL
+	"LevelId"	integer NOT NULL
 ,
-    FOREIGN KEY ([EntityId])
-        REFERENCES [Entity]([Id]),
     FOREIGN KEY ([LevelId])
         REFERENCES [Level]([Id])
 );
 
 CREATE UNIQUE INDEX [SavedGame_UX_SavedGame]
 ON [SavedGame]
-([Name], [LevelId], [EntityId]);
+([Name]);
+
+CREATE TABLE [SavedGame_Entity] (
+	"SavedGameId"		integer NOT NULL,
+	"EntityId"		integer NOT NULL,
+    PRIMARY KEY ([SavedGameId], [EntityId])
+,
+    FOREIGN KEY ([SavedGameId])
+        REFERENCES [SavedGame]([Id]),
+    FOREIGN KEY ([EntityId])
+        REFERENCES [EntityId]([Id])
+);
