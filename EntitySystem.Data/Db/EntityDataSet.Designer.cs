@@ -38,13 +38,15 @@ namespace EntitySystem.Data.Db {
         
         private LevelDataTable tableLevel;
         
-        private Level_EntityTemplateDataTable tableLevel_EntityTemplate;
+        private Level_EntityDataTable tableLevel_Entity;
         
         private SavedGameDataTable tableSavedGame;
         
-        private global::System.Data.DataRelation relationFK_Entity_EntityComponent;
+        private SavedGame_EntityDataTable tableSavedGame_Entity;
         
         private global::System.Data.DataRelation relationFK_Component_EntityComponent;
+        
+        private global::System.Data.DataRelation relationFK_Entity_EntityComponent;
         
         private global::System.Data.DataRelation relationFK_EntityComponent_EntityComponent_ArrayData;
         
@@ -52,13 +54,15 @@ namespace EntitySystem.Data.Db {
         
         private global::System.Data.DataRelation relationFK_Entity_EntityTemplate;
         
-        private global::System.Data.DataRelation relationFK_Level_Level_EntityTemplate;
+        private global::System.Data.DataRelation relationEntity_Level_Entity;
         
-        private global::System.Data.DataRelation relationFK_EntityTemplate_Level_EntityTemplate;
+        private global::System.Data.DataRelation relationFK_Level_Level_EntityTemplate;
         
         private global::System.Data.DataRelation relationFK_Level_SavedGame;
         
-        private global::System.Data.DataRelation relationFK_Entity_SavedGame;
+        private global::System.Data.DataRelation relationFK_Entity_SavedGame_Entity;
+        
+        private global::System.Data.DataRelation relationFK_SavedGame_SavedGame_Entity;
         
         private global::System.Data.SchemaSerializationMode _schemaSerializationMode = global::System.Data.SchemaSerializationMode.IncludeSchema;
         
@@ -109,11 +113,14 @@ namespace EntitySystem.Data.Db {
                 if ((ds.Tables["Level"] != null)) {
                     base.Tables.Add(new LevelDataTable(ds.Tables["Level"]));
                 }
-                if ((ds.Tables["Level_EntityTemplate"] != null)) {
-                    base.Tables.Add(new Level_EntityTemplateDataTable(ds.Tables["Level_EntityTemplate"]));
+                if ((ds.Tables["Level_Entity"] != null)) {
+                    base.Tables.Add(new Level_EntityDataTable(ds.Tables["Level_Entity"]));
                 }
                 if ((ds.Tables["SavedGame"] != null)) {
                     base.Tables.Add(new SavedGameDataTable(ds.Tables["SavedGame"]));
+                }
+                if ((ds.Tables["SavedGame_Entity"] != null)) {
+                    base.Tables.Add(new SavedGame_EntityDataTable(ds.Tables["SavedGame_Entity"]));
                 }
                 this.DataSetName = ds.DataSetName;
                 this.Prefix = ds.Prefix;
@@ -207,9 +214,9 @@ namespace EntitySystem.Data.Db {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Browsable(false)]
         [global::System.ComponentModel.DesignerSerializationVisibility(global::System.ComponentModel.DesignerSerializationVisibility.Content)]
-        public Level_EntityTemplateDataTable Level_EntityTemplate {
+        public Level_EntityDataTable Level_Entity {
             get {
-                return this.tableLevel_EntityTemplate;
+                return this.tableLevel_Entity;
             }
         }
         
@@ -220,6 +227,16 @@ namespace EntitySystem.Data.Db {
         public SavedGameDataTable SavedGame {
             get {
                 return this.tableSavedGame;
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+        [global::System.ComponentModel.Browsable(false)]
+        [global::System.ComponentModel.DesignerSerializationVisibility(global::System.ComponentModel.DesignerSerializationVisibility.Content)]
+        public SavedGame_EntityDataTable SavedGame_Entity {
+            get {
+                return this.tableSavedGame_Entity;
             }
         }
         
@@ -311,11 +328,14 @@ namespace EntitySystem.Data.Db {
                 if ((ds.Tables["Level"] != null)) {
                     base.Tables.Add(new LevelDataTable(ds.Tables["Level"]));
                 }
-                if ((ds.Tables["Level_EntityTemplate"] != null)) {
-                    base.Tables.Add(new Level_EntityTemplateDataTable(ds.Tables["Level_EntityTemplate"]));
+                if ((ds.Tables["Level_Entity"] != null)) {
+                    base.Tables.Add(new Level_EntityDataTable(ds.Tables["Level_Entity"]));
                 }
                 if ((ds.Tables["SavedGame"] != null)) {
                     base.Tables.Add(new SavedGameDataTable(ds.Tables["SavedGame"]));
+                }
+                if ((ds.Tables["SavedGame_Entity"] != null)) {
+                    base.Tables.Add(new SavedGame_EntityDataTable(ds.Tables["SavedGame_Entity"]));
                 }
                 this.DataSetName = ds.DataSetName;
                 this.Prefix = ds.Prefix;
@@ -392,10 +412,10 @@ namespace EntitySystem.Data.Db {
                     this.tableLevel.InitVars();
                 }
             }
-            this.tableLevel_EntityTemplate = ((Level_EntityTemplateDataTable)(base.Tables["Level_EntityTemplate"]));
+            this.tableLevel_Entity = ((Level_EntityDataTable)(base.Tables["Level_Entity"]));
             if ((initTable == true)) {
-                if ((this.tableLevel_EntityTemplate != null)) {
-                    this.tableLevel_EntityTemplate.InitVars();
+                if ((this.tableLevel_Entity != null)) {
+                    this.tableLevel_Entity.InitVars();
                 }
             }
             this.tableSavedGame = ((SavedGameDataTable)(base.Tables["SavedGame"]));
@@ -404,15 +424,22 @@ namespace EntitySystem.Data.Db {
                     this.tableSavedGame.InitVars();
                 }
             }
-            this.relationFK_Entity_EntityComponent = this.Relations["FK_Entity_EntityComponent"];
+            this.tableSavedGame_Entity = ((SavedGame_EntityDataTable)(base.Tables["SavedGame_Entity"]));
+            if ((initTable == true)) {
+                if ((this.tableSavedGame_Entity != null)) {
+                    this.tableSavedGame_Entity.InitVars();
+                }
+            }
             this.relationFK_Component_EntityComponent = this.Relations["FK_Component_EntityComponent"];
+            this.relationFK_Entity_EntityComponent = this.Relations["FK_Entity_EntityComponent"];
             this.relationFK_EntityComponent_EntityComponent_ArrayData = this.Relations["FK_EntityComponent_EntityComponent_ArrayData"];
             this.relationFK_EntityComponent_EntityComponent_Data = this.Relations["FK_EntityComponent_EntityComponent_Data"];
             this.relationFK_Entity_EntityTemplate = this.Relations["FK_Entity_EntityTemplate"];
+            this.relationEntity_Level_Entity = this.Relations["Entity_Level_Entity"];
             this.relationFK_Level_Level_EntityTemplate = this.Relations["FK_Level_Level_EntityTemplate"];
-            this.relationFK_EntityTemplate_Level_EntityTemplate = this.Relations["FK_EntityTemplate_Level_EntityTemplate"];
             this.relationFK_Level_SavedGame = this.Relations["FK_Level_SavedGame"];
-            this.relationFK_Entity_SavedGame = this.Relations["FK_Entity_SavedGame"];
+            this.relationFK_Entity_SavedGame_Entity = this.Relations["FK_Entity_SavedGame_Entity"];
+            this.relationFK_SavedGame_SavedGame_Entity = this.Relations["FK_SavedGame_SavedGame_Entity"];
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -437,21 +464,23 @@ namespace EntitySystem.Data.Db {
             base.Tables.Add(this.tableEntityTemplate);
             this.tableLevel = new LevelDataTable();
             base.Tables.Add(this.tableLevel);
-            this.tableLevel_EntityTemplate = new Level_EntityTemplateDataTable();
-            base.Tables.Add(this.tableLevel_EntityTemplate);
+            this.tableLevel_Entity = new Level_EntityDataTable();
+            base.Tables.Add(this.tableLevel_Entity);
             this.tableSavedGame = new SavedGameDataTable();
             base.Tables.Add(this.tableSavedGame);
+            this.tableSavedGame_Entity = new SavedGame_EntityDataTable();
+            base.Tables.Add(this.tableSavedGame_Entity);
             global::System.Data.ForeignKeyConstraint fkc;
-            fkc = new global::System.Data.ForeignKeyConstraint("FK_Entity_EntityComponent", new global::System.Data.DataColumn[] {
-                        this.tableEntity.IdColumn}, new global::System.Data.DataColumn[] {
-                        this.tableEntityComponent.EntityIdColumn});
+            fkc = new global::System.Data.ForeignKeyConstraint("FK_Component_EntityComponent", new global::System.Data.DataColumn[] {
+                        this.tableComponent.IdColumn}, new global::System.Data.DataColumn[] {
+                        this.tableEntityComponent.ComponentIdColumn});
             this.tableEntityComponent.Constraints.Add(fkc);
             fkc.AcceptRejectRule = global::System.Data.AcceptRejectRule.None;
             fkc.DeleteRule = global::System.Data.Rule.Cascade;
             fkc.UpdateRule = global::System.Data.Rule.Cascade;
-            fkc = new global::System.Data.ForeignKeyConstraint("FK_Component_EntityComponent", new global::System.Data.DataColumn[] {
-                        this.tableComponent.IdColumn}, new global::System.Data.DataColumn[] {
-                        this.tableEntityComponent.ComponentIdColumn});
+            fkc = new global::System.Data.ForeignKeyConstraint("FK_Entity_EntityComponent", new global::System.Data.DataColumn[] {
+                        this.tableEntity.IdColumn}, new global::System.Data.DataColumn[] {
+                        this.tableEntityComponent.EntityIdColumn});
             this.tableEntityComponent.Constraints.Add(fkc);
             fkc.AcceptRejectRule = global::System.Data.AcceptRejectRule.None;
             fkc.DeleteRule = global::System.Data.Rule.Cascade;
@@ -477,17 +506,17 @@ namespace EntitySystem.Data.Db {
             fkc.AcceptRejectRule = global::System.Data.AcceptRejectRule.None;
             fkc.DeleteRule = global::System.Data.Rule.Cascade;
             fkc.UpdateRule = global::System.Data.Rule.Cascade;
-            fkc = new global::System.Data.ForeignKeyConstraint("FK_Level_Level_EntityTemplate", new global::System.Data.DataColumn[] {
-                        this.tableLevel.IdColumn}, new global::System.Data.DataColumn[] {
-                        this.tableLevel_EntityTemplate.LevelIdColumn});
-            this.tableLevel_EntityTemplate.Constraints.Add(fkc);
+            fkc = new global::System.Data.ForeignKeyConstraint("Entity_Level_Entity", new global::System.Data.DataColumn[] {
+                        this.tableEntity.IdColumn}, new global::System.Data.DataColumn[] {
+                        this.tableLevel_Entity.EntityIdColumn});
+            this.tableLevel_Entity.Constraints.Add(fkc);
             fkc.AcceptRejectRule = global::System.Data.AcceptRejectRule.None;
             fkc.DeleteRule = global::System.Data.Rule.Cascade;
             fkc.UpdateRule = global::System.Data.Rule.Cascade;
-            fkc = new global::System.Data.ForeignKeyConstraint("FK_EntityTemplate_Level_EntityTemplate", new global::System.Data.DataColumn[] {
-                        this.tableEntityTemplate.IdColumn}, new global::System.Data.DataColumn[] {
-                        this.tableLevel_EntityTemplate.EntityTemplateIdColumn});
-            this.tableLevel_EntityTemplate.Constraints.Add(fkc);
+            fkc = new global::System.Data.ForeignKeyConstraint("FK_Level_Level_EntityTemplate", new global::System.Data.DataColumn[] {
+                        this.tableLevel.IdColumn}, new global::System.Data.DataColumn[] {
+                        this.tableLevel_Entity.LevelIdColumn});
+            this.tableLevel_Entity.Constraints.Add(fkc);
             fkc.AcceptRejectRule = global::System.Data.AcceptRejectRule.None;
             fkc.DeleteRule = global::System.Data.Rule.Cascade;
             fkc.UpdateRule = global::System.Data.Rule.Cascade;
@@ -498,21 +527,28 @@ namespace EntitySystem.Data.Db {
             fkc.AcceptRejectRule = global::System.Data.AcceptRejectRule.None;
             fkc.DeleteRule = global::System.Data.Rule.Cascade;
             fkc.UpdateRule = global::System.Data.Rule.Cascade;
-            fkc = new global::System.Data.ForeignKeyConstraint("FK_Entity_SavedGame", new global::System.Data.DataColumn[] {
+            fkc = new global::System.Data.ForeignKeyConstraint("FK_Entity_SavedGame_Entity", new global::System.Data.DataColumn[] {
                         this.tableEntity.IdColumn}, new global::System.Data.DataColumn[] {
-                        this.tableSavedGame.EntityIdColumn});
-            this.tableSavedGame.Constraints.Add(fkc);
+                        this.tableSavedGame_Entity.EntityIdColumn});
+            this.tableSavedGame_Entity.Constraints.Add(fkc);
             fkc.AcceptRejectRule = global::System.Data.AcceptRejectRule.None;
             fkc.DeleteRule = global::System.Data.Rule.Cascade;
             fkc.UpdateRule = global::System.Data.Rule.Cascade;
-            this.relationFK_Entity_EntityComponent = new global::System.Data.DataRelation("FK_Entity_EntityComponent", new global::System.Data.DataColumn[] {
-                        this.tableEntity.IdColumn}, new global::System.Data.DataColumn[] {
-                        this.tableEntityComponent.EntityIdColumn}, false);
-            this.Relations.Add(this.relationFK_Entity_EntityComponent);
+            fkc = new global::System.Data.ForeignKeyConstraint("FK_SavedGame_SavedGame_Entity", new global::System.Data.DataColumn[] {
+                        this.tableSavedGame.IdColumn}, new global::System.Data.DataColumn[] {
+                        this.tableSavedGame_Entity.SavedGameIdColumn});
+            this.tableSavedGame_Entity.Constraints.Add(fkc);
+            fkc.AcceptRejectRule = global::System.Data.AcceptRejectRule.None;
+            fkc.DeleteRule = global::System.Data.Rule.Cascade;
+            fkc.UpdateRule = global::System.Data.Rule.Cascade;
             this.relationFK_Component_EntityComponent = new global::System.Data.DataRelation("FK_Component_EntityComponent", new global::System.Data.DataColumn[] {
                         this.tableComponent.IdColumn}, new global::System.Data.DataColumn[] {
                         this.tableEntityComponent.ComponentIdColumn}, false);
             this.Relations.Add(this.relationFK_Component_EntityComponent);
+            this.relationFK_Entity_EntityComponent = new global::System.Data.DataRelation("FK_Entity_EntityComponent", new global::System.Data.DataColumn[] {
+                        this.tableEntity.IdColumn}, new global::System.Data.DataColumn[] {
+                        this.tableEntityComponent.EntityIdColumn}, false);
+            this.Relations.Add(this.relationFK_Entity_EntityComponent);
             this.relationFK_EntityComponent_EntityComponent_ArrayData = new global::System.Data.DataRelation("FK_EntityComponent_EntityComponent_ArrayData", new global::System.Data.DataColumn[] {
                         this.tableEntityComponent.IdColumn}, new global::System.Data.DataColumn[] {
                         this.tableEntityComponent_ArrayData.EntityComponentIdColumn}, false);
@@ -525,22 +561,26 @@ namespace EntitySystem.Data.Db {
                         this.tableEntity.IdColumn}, new global::System.Data.DataColumn[] {
                         this.tableEntityTemplate.EntityIdColumn}, false);
             this.Relations.Add(this.relationFK_Entity_EntityTemplate);
+            this.relationEntity_Level_Entity = new global::System.Data.DataRelation("Entity_Level_Entity", new global::System.Data.DataColumn[] {
+                        this.tableEntity.IdColumn}, new global::System.Data.DataColumn[] {
+                        this.tableLevel_Entity.EntityIdColumn}, false);
+            this.Relations.Add(this.relationEntity_Level_Entity);
             this.relationFK_Level_Level_EntityTemplate = new global::System.Data.DataRelation("FK_Level_Level_EntityTemplate", new global::System.Data.DataColumn[] {
                         this.tableLevel.IdColumn}, new global::System.Data.DataColumn[] {
-                        this.tableLevel_EntityTemplate.LevelIdColumn}, false);
+                        this.tableLevel_Entity.LevelIdColumn}, false);
             this.Relations.Add(this.relationFK_Level_Level_EntityTemplate);
-            this.relationFK_EntityTemplate_Level_EntityTemplate = new global::System.Data.DataRelation("FK_EntityTemplate_Level_EntityTemplate", new global::System.Data.DataColumn[] {
-                        this.tableEntityTemplate.IdColumn}, new global::System.Data.DataColumn[] {
-                        this.tableLevel_EntityTemplate.EntityTemplateIdColumn}, false);
-            this.Relations.Add(this.relationFK_EntityTemplate_Level_EntityTemplate);
             this.relationFK_Level_SavedGame = new global::System.Data.DataRelation("FK_Level_SavedGame", new global::System.Data.DataColumn[] {
                         this.tableLevel.IdColumn}, new global::System.Data.DataColumn[] {
                         this.tableSavedGame.LevelIdColumn}, false);
             this.Relations.Add(this.relationFK_Level_SavedGame);
-            this.relationFK_Entity_SavedGame = new global::System.Data.DataRelation("FK_Entity_SavedGame", new global::System.Data.DataColumn[] {
+            this.relationFK_Entity_SavedGame_Entity = new global::System.Data.DataRelation("FK_Entity_SavedGame_Entity", new global::System.Data.DataColumn[] {
                         this.tableEntity.IdColumn}, new global::System.Data.DataColumn[] {
-                        this.tableSavedGame.EntityIdColumn}, false);
-            this.Relations.Add(this.relationFK_Entity_SavedGame);
+                        this.tableSavedGame_Entity.EntityIdColumn}, false);
+            this.Relations.Add(this.relationFK_Entity_SavedGame_Entity);
+            this.relationFK_SavedGame_SavedGame_Entity = new global::System.Data.DataRelation("FK_SavedGame_SavedGame_Entity", new global::System.Data.DataColumn[] {
+                        this.tableSavedGame.IdColumn}, new global::System.Data.DataColumn[] {
+                        this.tableSavedGame_Entity.SavedGameIdColumn}, false);
+            this.Relations.Add(this.relationFK_SavedGame_SavedGame_Entity);
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -587,13 +627,19 @@ namespace EntitySystem.Data.Db {
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-        private bool ShouldSerializeLevel_EntityTemplate() {
+        private bool ShouldSerializeLevel_Entity() {
             return false;
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         private bool ShouldSerializeSavedGame() {
+            return false;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+        private bool ShouldSerializeSavedGame_Entity() {
             return false;
         }
         
@@ -674,10 +720,13 @@ namespace EntitySystem.Data.Db {
         public delegate void LevelRowChangeEventHandler(object sender, LevelRowChangeEvent e);
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-        public delegate void Level_EntityTemplateRowChangeEventHandler(object sender, Level_EntityTemplateRowChangeEvent e);
+        public delegate void Level_EntityRowChangeEventHandler(object sender, Level_EntityRowChangeEvent e);
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         public delegate void SavedGameRowChangeEventHandler(object sender, SavedGameRowChangeEvent e);
+        
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+        public delegate void SavedGame_EntityRowChangeEventHandler(object sender, SavedGame_EntityRowChangeEvent e);
         
         /// <summary>
         ///Represents the strongly named DataTable class.
@@ -2751,16 +2800,16 @@ namespace EntitySystem.Data.Db {
         ///</summary>
         [global::System.Serializable()]
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
-        public partial class Level_EntityTemplateDataTable : global::System.Data.TypedTableBase<Level_EntityTemplateRow> {
+        public partial class Level_EntityDataTable : global::System.Data.TypedTableBase<Level_EntityRow> {
             
             private global::System.Data.DataColumn columnLevelId;
             
-            private global::System.Data.DataColumn columnEntityTemplateId;
+            private global::System.Data.DataColumn columnEntityId;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public Level_EntityTemplateDataTable() {
-                this.TableName = "Level_EntityTemplate";
+            public Level_EntityDataTable() {
+                this.TableName = "Level_Entity";
                 this.BeginInit();
                 this.InitClass();
                 this.EndInit();
@@ -2768,7 +2817,7 @@ namespace EntitySystem.Data.Db {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            internal Level_EntityTemplateDataTable(global::System.Data.DataTable table) {
+            internal Level_EntityDataTable(global::System.Data.DataTable table) {
                 this.TableName = table.TableName;
                 if ((table.CaseSensitive != table.DataSet.CaseSensitive)) {
                     this.CaseSensitive = table.CaseSensitive;
@@ -2785,7 +2834,7 @@ namespace EntitySystem.Data.Db {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            protected Level_EntityTemplateDataTable(global::System.Runtime.Serialization.SerializationInfo info, global::System.Runtime.Serialization.StreamingContext context) : 
+            protected Level_EntityDataTable(global::System.Runtime.Serialization.SerializationInfo info, global::System.Runtime.Serialization.StreamingContext context) : 
                     base(info, context) {
                 this.InitVars();
             }
@@ -2800,9 +2849,9 @@ namespace EntitySystem.Data.Db {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn EntityTemplateIdColumn {
+            public global::System.Data.DataColumn EntityIdColumn {
                 get {
-                    return this.columnEntityTemplateId;
+                    return this.columnEntityId;
                 }
             }
             
@@ -2817,60 +2866,60 @@ namespace EntitySystem.Data.Db {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public Level_EntityTemplateRow this[int index] {
+            public Level_EntityRow this[int index] {
                 get {
-                    return ((Level_EntityTemplateRow)(this.Rows[index]));
+                    return ((Level_EntityRow)(this.Rows[index]));
                 }
             }
             
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public event Level_EntityTemplateRowChangeEventHandler Level_EntityTemplateRowChanging;
+            public event Level_EntityRowChangeEventHandler Level_EntityRowChanging;
             
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public event Level_EntityTemplateRowChangeEventHandler Level_EntityTemplateRowChanged;
+            public event Level_EntityRowChangeEventHandler Level_EntityRowChanged;
             
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public event Level_EntityTemplateRowChangeEventHandler Level_EntityTemplateRowDeleting;
+            public event Level_EntityRowChangeEventHandler Level_EntityRowDeleting;
             
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public event Level_EntityTemplateRowChangeEventHandler Level_EntityTemplateRowDeleted;
+            public event Level_EntityRowChangeEventHandler Level_EntityRowDeleted;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void AddLevel_EntityTemplateRow(Level_EntityTemplateRow row) {
+            public void AddLevel_EntityRow(Level_EntityRow row) {
                 this.Rows.Add(row);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public Level_EntityTemplateRow AddLevel_EntityTemplateRow(LevelRow parentLevelRowByFK_Level_Level_EntityTemplate, EntityTemplateRow parentEntityTemplateRowByFK_EntityTemplate_Level_EntityTemplate) {
-                Level_EntityTemplateRow rowLevel_EntityTemplateRow = ((Level_EntityTemplateRow)(this.NewRow()));
+            public Level_EntityRow AddLevel_EntityRow(LevelRow parentLevelRowByFK_Level_Level_EntityTemplate, EntityRow parentEntityRowByEntity_Level_Entity) {
+                Level_EntityRow rowLevel_EntityRow = ((Level_EntityRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         null,
                         null};
                 if ((parentLevelRowByFK_Level_Level_EntityTemplate != null)) {
                     columnValuesArray[0] = parentLevelRowByFK_Level_Level_EntityTemplate[0];
                 }
-                if ((parentEntityTemplateRowByFK_EntityTemplate_Level_EntityTemplate != null)) {
-                    columnValuesArray[1] = parentEntityTemplateRowByFK_EntityTemplate_Level_EntityTemplate[0];
+                if ((parentEntityRowByEntity_Level_Entity != null)) {
+                    columnValuesArray[1] = parentEntityRowByEntity_Level_Entity[0];
                 }
-                rowLevel_EntityTemplateRow.ItemArray = columnValuesArray;
-                this.Rows.Add(rowLevel_EntityTemplateRow);
-                return rowLevel_EntityTemplateRow;
+                rowLevel_EntityRow.ItemArray = columnValuesArray;
+                this.Rows.Add(rowLevel_EntityRow);
+                return rowLevel_EntityRow;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public Level_EntityTemplateRow FindByEntityTemplateIdLevelId(int EntityTemplateId, int LevelId) {
-                return ((Level_EntityTemplateRow)(this.Rows.Find(new object[] {
-                            EntityTemplateId,
+            public Level_EntityRow FindByEntityIdLevelId(int EntityId, int LevelId) {
+                return ((Level_EntityRow)(this.Rows.Find(new object[] {
+                            EntityId,
                             LevelId})));
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public override global::System.Data.DataTable Clone() {
-                Level_EntityTemplateDataTable cln = ((Level_EntityTemplateDataTable)(base.Clone()));
+                Level_EntityDataTable cln = ((Level_EntityDataTable)(base.Clone()));
                 cln.InitVars();
                 return cln;
             }
@@ -2878,14 +2927,14 @@ namespace EntitySystem.Data.Db {
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             protected override global::System.Data.DataTable CreateInstance() {
-                return new Level_EntityTemplateDataTable();
+                return new Level_EntityDataTable();
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             internal void InitVars() {
                 this.columnLevelId = base.Columns["LevelId"];
-                this.columnEntityTemplateId = base.Columns["EntityTemplateId"];
+                this.columnEntityId = base.Columns["EntityId"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -2893,39 +2942,39 @@ namespace EntitySystem.Data.Db {
             private void InitClass() {
                 this.columnLevelId = new global::System.Data.DataColumn("LevelId", typeof(int), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnLevelId);
-                this.columnEntityTemplateId = new global::System.Data.DataColumn("EntityTemplateId", typeof(int), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnEntityTemplateId);
+                this.columnEntityId = new global::System.Data.DataColumn("EntityId", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnEntityId);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
-                                this.columnEntityTemplateId,
+                                this.columnEntityId,
                                 this.columnLevelId}, true));
                 this.columnLevelId.AllowDBNull = false;
-                this.columnEntityTemplateId.AllowDBNull = false;
+                this.columnEntityId.AllowDBNull = false;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public Level_EntityTemplateRow NewLevel_EntityTemplateRow() {
-                return ((Level_EntityTemplateRow)(this.NewRow()));
+            public Level_EntityRow NewLevel_EntityRow() {
+                return ((Level_EntityRow)(this.NewRow()));
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             protected override global::System.Data.DataRow NewRowFromBuilder(global::System.Data.DataRowBuilder builder) {
-                return new Level_EntityTemplateRow(builder);
+                return new Level_EntityRow(builder);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             protected override global::System.Type GetRowType() {
-                return typeof(Level_EntityTemplateRow);
+                return typeof(Level_EntityRow);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             protected override void OnRowChanged(global::System.Data.DataRowChangeEventArgs e) {
                 base.OnRowChanged(e);
-                if ((this.Level_EntityTemplateRowChanged != null)) {
-                    this.Level_EntityTemplateRowChanged(this, new Level_EntityTemplateRowChangeEvent(((Level_EntityTemplateRow)(e.Row)), e.Action));
+                if ((this.Level_EntityRowChanged != null)) {
+                    this.Level_EntityRowChanged(this, new Level_EntityRowChangeEvent(((Level_EntityRow)(e.Row)), e.Action));
                 }
             }
             
@@ -2933,8 +2982,8 @@ namespace EntitySystem.Data.Db {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             protected override void OnRowChanging(global::System.Data.DataRowChangeEventArgs e) {
                 base.OnRowChanging(e);
-                if ((this.Level_EntityTemplateRowChanging != null)) {
-                    this.Level_EntityTemplateRowChanging(this, new Level_EntityTemplateRowChangeEvent(((Level_EntityTemplateRow)(e.Row)), e.Action));
+                if ((this.Level_EntityRowChanging != null)) {
+                    this.Level_EntityRowChanging(this, new Level_EntityRowChangeEvent(((Level_EntityRow)(e.Row)), e.Action));
                 }
             }
             
@@ -2942,8 +2991,8 @@ namespace EntitySystem.Data.Db {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             protected override void OnRowDeleted(global::System.Data.DataRowChangeEventArgs e) {
                 base.OnRowDeleted(e);
-                if ((this.Level_EntityTemplateRowDeleted != null)) {
-                    this.Level_EntityTemplateRowDeleted(this, new Level_EntityTemplateRowChangeEvent(((Level_EntityTemplateRow)(e.Row)), e.Action));
+                if ((this.Level_EntityRowDeleted != null)) {
+                    this.Level_EntityRowDeleted(this, new Level_EntityRowChangeEvent(((Level_EntityRow)(e.Row)), e.Action));
                 }
             }
             
@@ -2951,14 +3000,14 @@ namespace EntitySystem.Data.Db {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             protected override void OnRowDeleting(global::System.Data.DataRowChangeEventArgs e) {
                 base.OnRowDeleting(e);
-                if ((this.Level_EntityTemplateRowDeleting != null)) {
-                    this.Level_EntityTemplateRowDeleting(this, new Level_EntityTemplateRowChangeEvent(((Level_EntityTemplateRow)(e.Row)), e.Action));
+                if ((this.Level_EntityRowDeleting != null)) {
+                    this.Level_EntityRowDeleting(this, new Level_EntityRowChangeEvent(((Level_EntityRow)(e.Row)), e.Action));
                 }
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void RemoveLevel_EntityTemplateRow(Level_EntityTemplateRow row) {
+            public void RemoveLevel_EntityRow(Level_EntityRow row) {
                 this.Rows.Remove(row);
             }
             
@@ -2985,7 +3034,7 @@ namespace EntitySystem.Data.Db {
                 type.Attributes.Add(attribute1);
                 global::System.Xml.Schema.XmlSchemaAttribute attribute2 = new global::System.Xml.Schema.XmlSchemaAttribute();
                 attribute2.Name = "tableTypeName";
-                attribute2.FixedValue = "Level_EntityTemplateDataTable";
+                attribute2.FixedValue = "Level_EntityDataTable";
                 type.Attributes.Add(attribute2);
                 type.Particle = sequence;
                 global::System.Xml.Schema.XmlSchema dsSchema = ds.GetSchemaSerializable();
@@ -3038,8 +3087,6 @@ namespace EntitySystem.Data.Db {
             private global::System.Data.DataColumn columnName;
             
             private global::System.Data.DataColumn columnLevelId;
-            
-            private global::System.Data.DataColumn columnEntityId;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
@@ -3100,14 +3147,6 @@ namespace EntitySystem.Data.Db {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn EntityIdColumn {
-                get {
-                    return this.columnEntityId;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -3143,18 +3182,14 @@ namespace EntitySystem.Data.Db {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public SavedGameRow AddSavedGameRow(string Name, LevelRow parentLevelRowByFK_Level_SavedGame, EntityRow parentEntityRowByFK_Entity_SavedGame) {
+            public SavedGameRow AddSavedGameRow(string Name, LevelRow parentLevelRowByFK_Level_SavedGame) {
                 SavedGameRow rowSavedGameRow = ((SavedGameRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         null,
                         Name,
-                        null,
                         null};
                 if ((parentLevelRowByFK_Level_SavedGame != null)) {
                     columnValuesArray[2] = parentLevelRowByFK_Level_SavedGame[0];
-                }
-                if ((parentEntityRowByFK_Entity_SavedGame != null)) {
-                    columnValuesArray[3] = parentEntityRowByFK_Entity_SavedGame[0];
                 }
                 rowSavedGameRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowSavedGameRow);
@@ -3188,7 +3223,6 @@ namespace EntitySystem.Data.Db {
                 this.columnId = base.Columns["Id"];
                 this.columnName = base.Columns["Name"];
                 this.columnLevelId = base.Columns["LevelId"];
-                this.columnEntityId = base.Columns["EntityId"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -3200,21 +3234,17 @@ namespace EntitySystem.Data.Db {
                 base.Columns.Add(this.columnName);
                 this.columnLevelId = new global::System.Data.DataColumn("LevelId", typeof(int), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnLevelId);
-                this.columnEntityId = new global::System.Data.DataColumn("EntityId", typeof(int), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnEntityId);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
                                 this.columnId}, true));
-                this.Constraints.Add(new global::System.Data.UniqueConstraint("SavedGame_UX_SavedGame", new global::System.Data.DataColumn[] {
+                this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint2", new global::System.Data.DataColumn[] {
                                 this.columnName,
-                                this.columnLevelId,
-                                this.columnEntityId}, false));
+                                this.columnLevelId}, false));
                 this.columnId.AutoIncrement = true;
                 this.columnId.AutoIncrementSeed = 1;
                 this.columnId.AllowDBNull = false;
                 this.columnId.Unique = true;
                 this.columnName.AllowDBNull = false;
                 this.columnLevelId.AllowDBNull = false;
-                this.columnEntityId.AllowDBNull = false;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -3342,6 +3372,286 @@ namespace EntitySystem.Data.Db {
         }
         
         /// <summary>
+        ///Represents the strongly named DataTable class.
+        ///</summary>
+        [global::System.Serializable()]
+        [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
+        public partial class SavedGame_EntityDataTable : global::System.Data.TypedTableBase<SavedGame_EntityRow> {
+            
+            private global::System.Data.DataColumn columnSavedGameId;
+            
+            private global::System.Data.DataColumn columnEntityId;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public SavedGame_EntityDataTable() {
+                this.TableName = "SavedGame_Entity";
+                this.BeginInit();
+                this.InitClass();
+                this.EndInit();
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            internal SavedGame_EntityDataTable(global::System.Data.DataTable table) {
+                this.TableName = table.TableName;
+                if ((table.CaseSensitive != table.DataSet.CaseSensitive)) {
+                    this.CaseSensitive = table.CaseSensitive;
+                }
+                if ((table.Locale.ToString() != table.DataSet.Locale.ToString())) {
+                    this.Locale = table.Locale;
+                }
+                if ((table.Namespace != table.DataSet.Namespace)) {
+                    this.Namespace = table.Namespace;
+                }
+                this.Prefix = table.Prefix;
+                this.MinimumCapacity = table.MinimumCapacity;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected SavedGame_EntityDataTable(global::System.Runtime.Serialization.SerializationInfo info, global::System.Runtime.Serialization.StreamingContext context) : 
+                    base(info, context) {
+                this.InitVars();
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn SavedGameIdColumn {
+                get {
+                    return this.columnSavedGameId;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn EntityIdColumn {
+                get {
+                    return this.columnEntityId;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            [global::System.ComponentModel.Browsable(false)]
+            public int Count {
+                get {
+                    return this.Rows.Count;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public SavedGame_EntityRow this[int index] {
+                get {
+                    return ((SavedGame_EntityRow)(this.Rows[index]));
+                }
+            }
+            
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public event SavedGame_EntityRowChangeEventHandler SavedGame_EntityRowChanging;
+            
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public event SavedGame_EntityRowChangeEventHandler SavedGame_EntityRowChanged;
+            
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public event SavedGame_EntityRowChangeEventHandler SavedGame_EntityRowDeleting;
+            
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public event SavedGame_EntityRowChangeEventHandler SavedGame_EntityRowDeleted;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void AddSavedGame_EntityRow(SavedGame_EntityRow row) {
+                this.Rows.Add(row);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public SavedGame_EntityRow AddSavedGame_EntityRow(SavedGameRow parentSavedGameRowByFK_SavedGame_SavedGame_Entity, EntityRow parentEntityRowByFK_Entity_SavedGame_Entity) {
+                SavedGame_EntityRow rowSavedGame_EntityRow = ((SavedGame_EntityRow)(this.NewRow()));
+                object[] columnValuesArray = new object[] {
+                        null,
+                        null};
+                if ((parentSavedGameRowByFK_SavedGame_SavedGame_Entity != null)) {
+                    columnValuesArray[0] = parentSavedGameRowByFK_SavedGame_SavedGame_Entity[0];
+                }
+                if ((parentEntityRowByFK_Entity_SavedGame_Entity != null)) {
+                    columnValuesArray[1] = parentEntityRowByFK_Entity_SavedGame_Entity[0];
+                }
+                rowSavedGame_EntityRow.ItemArray = columnValuesArray;
+                this.Rows.Add(rowSavedGame_EntityRow);
+                return rowSavedGame_EntityRow;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public SavedGame_EntityRow FindBySavedGameIdEntityId(int SavedGameId, int EntityId) {
+                return ((SavedGame_EntityRow)(this.Rows.Find(new object[] {
+                            SavedGameId,
+                            EntityId})));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public override global::System.Data.DataTable Clone() {
+                SavedGame_EntityDataTable cln = ((SavedGame_EntityDataTable)(base.Clone()));
+                cln.InitVars();
+                return cln;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override global::System.Data.DataTable CreateInstance() {
+                return new SavedGame_EntityDataTable();
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            internal void InitVars() {
+                this.columnSavedGameId = base.Columns["SavedGameId"];
+                this.columnEntityId = base.Columns["EntityId"];
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            private void InitClass() {
+                this.columnSavedGameId = new global::System.Data.DataColumn("SavedGameId", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnSavedGameId);
+                this.columnEntityId = new global::System.Data.DataColumn("EntityId", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnEntityId);
+                this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
+                                this.columnSavedGameId,
+                                this.columnEntityId}, true));
+                this.columnSavedGameId.AllowDBNull = false;
+                this.columnEntityId.AllowDBNull = false;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public SavedGame_EntityRow NewSavedGame_EntityRow() {
+                return ((SavedGame_EntityRow)(this.NewRow()));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override global::System.Data.DataRow NewRowFromBuilder(global::System.Data.DataRowBuilder builder) {
+                return new SavedGame_EntityRow(builder);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override global::System.Type GetRowType() {
+                return typeof(SavedGame_EntityRow);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override void OnRowChanged(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowChanged(e);
+                if ((this.SavedGame_EntityRowChanged != null)) {
+                    this.SavedGame_EntityRowChanged(this, new SavedGame_EntityRowChangeEvent(((SavedGame_EntityRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override void OnRowChanging(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowChanging(e);
+                if ((this.SavedGame_EntityRowChanging != null)) {
+                    this.SavedGame_EntityRowChanging(this, new SavedGame_EntityRowChangeEvent(((SavedGame_EntityRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override void OnRowDeleted(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowDeleted(e);
+                if ((this.SavedGame_EntityRowDeleted != null)) {
+                    this.SavedGame_EntityRowDeleted(this, new SavedGame_EntityRowChangeEvent(((SavedGame_EntityRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override void OnRowDeleting(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowDeleting(e);
+                if ((this.SavedGame_EntityRowDeleting != null)) {
+                    this.SavedGame_EntityRowDeleting(this, new SavedGame_EntityRowChangeEvent(((SavedGame_EntityRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void RemoveSavedGame_EntityRow(SavedGame_EntityRow row) {
+                this.Rows.Remove(row);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public static global::System.Xml.Schema.XmlSchemaComplexType GetTypedTableSchema(global::System.Xml.Schema.XmlSchemaSet xs) {
+                global::System.Xml.Schema.XmlSchemaComplexType type = new global::System.Xml.Schema.XmlSchemaComplexType();
+                global::System.Xml.Schema.XmlSchemaSequence sequence = new global::System.Xml.Schema.XmlSchemaSequence();
+                EntityDataSet ds = new EntityDataSet();
+                global::System.Xml.Schema.XmlSchemaAny any1 = new global::System.Xml.Schema.XmlSchemaAny();
+                any1.Namespace = "http://www.w3.org/2001/XMLSchema";
+                any1.MinOccurs = new decimal(0);
+                any1.MaxOccurs = decimal.MaxValue;
+                any1.ProcessContents = global::System.Xml.Schema.XmlSchemaContentProcessing.Lax;
+                sequence.Items.Add(any1);
+                global::System.Xml.Schema.XmlSchemaAny any2 = new global::System.Xml.Schema.XmlSchemaAny();
+                any2.Namespace = "urn:schemas-microsoft-com:xml-diffgram-v1";
+                any2.MinOccurs = new decimal(1);
+                any2.ProcessContents = global::System.Xml.Schema.XmlSchemaContentProcessing.Lax;
+                sequence.Items.Add(any2);
+                global::System.Xml.Schema.XmlSchemaAttribute attribute1 = new global::System.Xml.Schema.XmlSchemaAttribute();
+                attribute1.Name = "namespace";
+                attribute1.FixedValue = ds.Namespace;
+                type.Attributes.Add(attribute1);
+                global::System.Xml.Schema.XmlSchemaAttribute attribute2 = new global::System.Xml.Schema.XmlSchemaAttribute();
+                attribute2.Name = "tableTypeName";
+                attribute2.FixedValue = "SavedGame_EntityDataTable";
+                type.Attributes.Add(attribute2);
+                type.Particle = sequence;
+                global::System.Xml.Schema.XmlSchema dsSchema = ds.GetSchemaSerializable();
+                if (xs.Contains(dsSchema.TargetNamespace)) {
+                    global::System.IO.MemoryStream s1 = new global::System.IO.MemoryStream();
+                    global::System.IO.MemoryStream s2 = new global::System.IO.MemoryStream();
+                    try {
+                        global::System.Xml.Schema.XmlSchema schema = null;
+                        dsSchema.Write(s1);
+                        for (global::System.Collections.IEnumerator schemas = xs.Schemas(dsSchema.TargetNamespace).GetEnumerator(); schemas.MoveNext(); ) {
+                            schema = ((global::System.Xml.Schema.XmlSchema)(schemas.Current));
+                            s2.SetLength(0);
+                            schema.Write(s2);
+                            if ((s1.Length == s2.Length)) {
+                                s1.Position = 0;
+                                s2.Position = 0;
+                                for (; ((s1.Position != s1.Length) 
+                                            && (s1.ReadByte() == s2.ReadByte())); ) {
+                                    ;
+                                }
+                                if ((s1.Position == s1.Length)) {
+                                    return type;
+                                }
+                            }
+                        }
+                    }
+                    finally {
+                        if ((s1 != null)) {
+                            s1.Close();
+                        }
+                        if ((s2 != null)) {
+                            s2.Close();
+                        }
+                    }
+                }
+                xs.Add(dsSchema);
+                return type;
+            }
+        }
+        
+        /// <summary>
         ///Represents strongly named DataRow class.
         ///</summary>
         public partial class EntityRow : global::System.Data.DataRow {
@@ -3368,12 +3678,23 @@ namespace EntitySystem.Data.Db {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public SavedGameRow[] GetSavedGameRows() {
-                if ((this.Table.ChildRelations["FK_Entity_SavedGame"] == null)) {
-                    return new SavedGameRow[0];
+            public SavedGame_EntityRow[] GetSavedGame_EntityRows() {
+                if ((this.Table.ChildRelations["FK_Entity_SavedGame_Entity"] == null)) {
+                    return new SavedGame_EntityRow[0];
                 }
                 else {
-                    return ((SavedGameRow[])(base.GetChildRows(this.Table.ChildRelations["FK_Entity_SavedGame"])));
+                    return ((SavedGame_EntityRow[])(base.GetChildRows(this.Table.ChildRelations["FK_Entity_SavedGame_Entity"])));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public Level_EntityRow[] GetLevel_EntityRows() {
+                if ((this.Table.ChildRelations["Entity_Level_Entity"] == null)) {
+                    return new Level_EntityRow[0];
+                }
+                else {
+                    return ((Level_EntityRow[])(base.GetChildRows(this.Table.ChildRelations["Entity_Level_Entity"])));
                 }
             }
             
@@ -3497,23 +3818,23 @@ namespace EntitySystem.Data.Db {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public EntityRow EntityRow {
-                get {
-                    return ((EntityRow)(this.GetParentRow(this.Table.ParentRelations["FK_Entity_EntityComponent"])));
-                }
-                set {
-                    this.SetParentRow(value, this.Table.ParentRelations["FK_Entity_EntityComponent"]);
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public ComponentRow ComponentRow {
                 get {
                     return ((ComponentRow)(this.GetParentRow(this.Table.ParentRelations["FK_Component_EntityComponent"])));
                 }
                 set {
                     this.SetParentRow(value, this.Table.ParentRelations["FK_Component_EntityComponent"]);
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public EntityRow EntityRow {
+                get {
+                    return ((EntityRow)(this.GetParentRow(this.Table.ParentRelations["FK_Entity_EntityComponent"])));
+                }
+                set {
+                    this.SetParentRow(value, this.Table.ParentRelations["FK_Entity_EntityComponent"]);
                 }
             }
             
@@ -3748,17 +4069,6 @@ namespace EntitySystem.Data.Db {
                     this.SetParentRow(value, this.Table.ParentRelations["FK_Entity_EntityTemplate"]);
                 }
             }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public Level_EntityTemplateRow[] GetLevel_EntityTemplateRows() {
-                if ((this.Table.ChildRelations["FK_EntityTemplate_Level_EntityTemplate"] == null)) {
-                    return new Level_EntityTemplateRow[0];
-                }
-                else {
-                    return ((Level_EntityTemplateRow[])(base.GetChildRows(this.Table.ChildRelations["FK_EntityTemplate_Level_EntityTemplate"])));
-                }
-            }
         }
         
         /// <summary>
@@ -3832,12 +4142,12 @@ namespace EntitySystem.Data.Db {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public Level_EntityTemplateRow[] GetLevel_EntityTemplateRows() {
+            public Level_EntityRow[] GetLevel_EntityRows() {
                 if ((this.Table.ChildRelations["FK_Level_Level_EntityTemplate"] == null)) {
-                    return new Level_EntityTemplateRow[0];
+                    return new Level_EntityRow[0];
                 }
                 else {
-                    return ((Level_EntityTemplateRow[])(base.GetChildRows(this.Table.ChildRelations["FK_Level_Level_EntityTemplate"])));
+                    return ((Level_EntityRow[])(base.GetChildRows(this.Table.ChildRelations["FK_Level_Level_EntityTemplate"])));
                 }
             }
         }
@@ -3845,36 +4155,47 @@ namespace EntitySystem.Data.Db {
         /// <summary>
         ///Represents strongly named DataRow class.
         ///</summary>
-        public partial class Level_EntityTemplateRow : global::System.Data.DataRow {
+        public partial class Level_EntityRow : global::System.Data.DataRow {
             
-            private Level_EntityTemplateDataTable tableLevel_EntityTemplate;
+            private Level_EntityDataTable tableLevel_Entity;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            internal Level_EntityTemplateRow(global::System.Data.DataRowBuilder rb) : 
+            internal Level_EntityRow(global::System.Data.DataRowBuilder rb) : 
                     base(rb) {
-                this.tableLevel_EntityTemplate = ((Level_EntityTemplateDataTable)(this.Table));
+                this.tableLevel_Entity = ((Level_EntityDataTable)(this.Table));
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public int LevelId {
                 get {
-                    return ((int)(this[this.tableLevel_EntityTemplate.LevelIdColumn]));
+                    return ((int)(this[this.tableLevel_Entity.LevelIdColumn]));
                 }
                 set {
-                    this[this.tableLevel_EntityTemplate.LevelIdColumn] = value;
+                    this[this.tableLevel_Entity.LevelIdColumn] = value;
                 }
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public int EntityTemplateId {
+            public int EntityId {
                 get {
-                    return ((int)(this[this.tableLevel_EntityTemplate.EntityTemplateIdColumn]));
+                    return ((int)(this[this.tableLevel_Entity.EntityIdColumn]));
                 }
                 set {
-                    this[this.tableLevel_EntityTemplate.EntityTemplateIdColumn] = value;
+                    this[this.tableLevel_Entity.EntityIdColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public EntityRow EntityRow {
+                get {
+                    return ((EntityRow)(this.GetParentRow(this.Table.ParentRelations["Entity_Level_Entity"])));
+                }
+                set {
+                    this.SetParentRow(value, this.Table.ParentRelations["Entity_Level_Entity"]);
                 }
             }
             
@@ -3886,17 +4207,6 @@ namespace EntitySystem.Data.Db {
                 }
                 set {
                     this.SetParentRow(value, this.Table.ParentRelations["FK_Level_Level_EntityTemplate"]);
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public EntityTemplateRow EntityTemplateRow {
-                get {
-                    return ((EntityTemplateRow)(this.GetParentRow(this.Table.ParentRelations["FK_EntityTemplate_Level_EntityTemplate"])));
-                }
-                set {
-                    this.SetParentRow(value, this.Table.ParentRelations["FK_EntityTemplate_Level_EntityTemplate"]);
                 }
             }
         }
@@ -3950,17 +4260,6 @@ namespace EntitySystem.Data.Db {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public int EntityId {
-                get {
-                    return ((int)(this[this.tableSavedGame.EntityIdColumn]));
-                }
-                set {
-                    this[this.tableSavedGame.EntityIdColumn] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public LevelRow LevelRow {
                 get {
                     return ((LevelRow)(this.GetParentRow(this.Table.ParentRelations["FK_Level_SavedGame"])));
@@ -3972,12 +4271,71 @@ namespace EntitySystem.Data.Db {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public EntityRow EntityRow {
+            public SavedGame_EntityRow[] GetSavedGame_EntityRows() {
+                if ((this.Table.ChildRelations["FK_SavedGame_SavedGame_Entity"] == null)) {
+                    return new SavedGame_EntityRow[0];
+                }
+                else {
+                    return ((SavedGame_EntityRow[])(base.GetChildRows(this.Table.ChildRelations["FK_SavedGame_SavedGame_Entity"])));
+                }
+            }
+        }
+        
+        /// <summary>
+        ///Represents strongly named DataRow class.
+        ///</summary>
+        public partial class SavedGame_EntityRow : global::System.Data.DataRow {
+            
+            private SavedGame_EntityDataTable tableSavedGame_Entity;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            internal SavedGame_EntityRow(global::System.Data.DataRowBuilder rb) : 
+                    base(rb) {
+                this.tableSavedGame_Entity = ((SavedGame_EntityDataTable)(this.Table));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public int SavedGameId {
                 get {
-                    return ((EntityRow)(this.GetParentRow(this.Table.ParentRelations["FK_Entity_SavedGame"])));
+                    return ((int)(this[this.tableSavedGame_Entity.SavedGameIdColumn]));
                 }
                 set {
-                    this.SetParentRow(value, this.Table.ParentRelations["FK_Entity_SavedGame"]);
+                    this[this.tableSavedGame_Entity.SavedGameIdColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public int EntityId {
+                get {
+                    return ((int)(this[this.tableSavedGame_Entity.EntityIdColumn]));
+                }
+                set {
+                    this[this.tableSavedGame_Entity.EntityIdColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public EntityRow EntityRow {
+                get {
+                    return ((EntityRow)(this.GetParentRow(this.Table.ParentRelations["FK_Entity_SavedGame_Entity"])));
+                }
+                set {
+                    this.SetParentRow(value, this.Table.ParentRelations["FK_Entity_SavedGame_Entity"]);
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public SavedGameRow SavedGameRow {
+                get {
+                    return ((SavedGameRow)(this.GetParentRow(this.Table.ParentRelations["FK_SavedGame_SavedGame_Entity"])));
+                }
+                set {
+                    this.SetParentRow(value, this.Table.ParentRelations["FK_SavedGame_SavedGame_Entity"]);
                 }
             }
         }
@@ -4224,22 +4582,22 @@ namespace EntitySystem.Data.Db {
         ///Row event argument class
         ///</summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-        public class Level_EntityTemplateRowChangeEvent : global::System.EventArgs {
+        public class Level_EntityRowChangeEvent : global::System.EventArgs {
             
-            private Level_EntityTemplateRow eventRow;
+            private Level_EntityRow eventRow;
             
             private global::System.Data.DataRowAction eventAction;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public Level_EntityTemplateRowChangeEvent(Level_EntityTemplateRow row, global::System.Data.DataRowAction action) {
+            public Level_EntityRowChangeEvent(Level_EntityRow row, global::System.Data.DataRowAction action) {
                 this.eventRow = row;
                 this.eventAction = action;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public Level_EntityTemplateRow Row {
+            public Level_EntityRow Row {
                 get {
                     return this.eventRow;
                 }
@@ -4274,6 +4632,40 @@ namespace EntitySystem.Data.Db {
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public SavedGameRow Row {
+                get {
+                    return this.eventRow;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataRowAction Action {
+                get {
+                    return this.eventAction;
+                }
+            }
+        }
+        
+        /// <summary>
+        ///Row event argument class
+        ///</summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+        public class SavedGame_EntityRowChangeEvent : global::System.EventArgs {
+            
+            private SavedGame_EntityRow eventRow;
+            
+            private global::System.Data.DataRowAction eventAction;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public SavedGame_EntityRowChangeEvent(SavedGame_EntityRow row, global::System.Data.DataRowAction action) {
+                this.eventRow = row;
+                this.eventAction = action;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public SavedGame_EntityRow Row {
                 get {
                     return this.eventRow;
                 }

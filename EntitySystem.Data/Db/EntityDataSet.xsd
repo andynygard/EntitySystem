@@ -76,11 +76,11 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="Level_EntityTemplate" msprop:Generator_TableClassName="Level_EntityTemplateDataTable" msprop:Generator_TableVarName="tableLevel_EntityTemplate" msprop:Generator_TablePropName="Level_EntityTemplate" msprop:Generator_RowDeletingName="Level_EntityTemplateRowDeleting" msprop:Generator_UserTableName="Level_EntityTemplate" msprop:Generator_RowChangingName="Level_EntityTemplateRowChanging" msprop:Generator_RowEvHandlerName="Level_EntityTemplateRowChangeEventHandler" msprop:Generator_RowDeletedName="Level_EntityTemplateRowDeleted" msprop:Generator_RowEvArgName="Level_EntityTemplateRowChangeEvent" msprop:Generator_RowChangedName="Level_EntityTemplateRowChanged" msprop:Generator_RowClassName="Level_EntityTemplateRow">
+        <xs:element name="Level_Entity" msprop:Generator_TableClassName="Level_EntityDataTable" msprop:Generator_TableVarName="tableLevel_Entity" msprop:Generator_TablePropName="Level_Entity" msprop:Generator_RowDeletingName="Level_EntityRowDeleting" msprop:Generator_UserTableName="Level_Entity" msprop:Generator_RowChangingName="Level_EntityRowChanging" msprop:Generator_RowEvHandlerName="Level_EntityRowChangeEventHandler" msprop:Generator_RowDeletedName="Level_EntityRowDeleted" msprop:Generator_RowEvArgName="Level_EntityRowChangeEvent" msprop:Generator_RowChangedName="Level_EntityRowChanged" msprop:Generator_RowClassName="Level_EntityRow">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="LevelId" msprop:Generator_ColumnVarNameInTable="columnLevelId" msprop:Generator_ColumnPropNameInRow="LevelId" msprop:Generator_ColumnPropNameInTable="LevelIdColumn" msprop:Generator_UserColumnName="LevelId" type="xs:int" />
-              <xs:element name="EntityTemplateId" msprop:Generator_ColumnVarNameInTable="columnEntityTemplateId" msprop:Generator_ColumnPropNameInRow="EntityTemplateId" msprop:Generator_ColumnPropNameInTable="EntityTemplateIdColumn" msprop:Generator_UserColumnName="EntityTemplateId" type="xs:int" />
+              <xs:element name="EntityId" msprop:Generator_ColumnVarNameInTable="columnEntityId" msprop:Generator_ColumnPropNameInRow="EntityId" msprop:Generator_ColumnPropNameInTable="EntityIdColumn" msprop:Generator_UserColumnName="EntityId" type="xs:int" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
@@ -90,6 +90,13 @@
               <xs:element name="Id" msdata:AutoIncrement="true" msdata:AutoIncrementSeed="1" msprop:Generator_ColumnVarNameInTable="columnId" msprop:Generator_ColumnPropNameInRow="Id" msprop:Generator_ColumnPropNameInTable="IdColumn" msprop:Generator_UserColumnName="Id" type="xs:int" />
               <xs:element name="Name" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnPropNameInTable="NameColumn" msprop:Generator_UserColumnName="Name" type="xs:string" />
               <xs:element name="LevelId" msprop:Generator_ColumnVarNameInTable="columnLevelId" msprop:Generator_ColumnPropNameInRow="LevelId" msprop:Generator_ColumnPropNameInTable="LevelIdColumn" msprop:Generator_UserColumnName="LevelId" type="xs:int" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="SavedGame_Entity" msprop:Generator_TableClassName="SavedGame_EntityDataTable" msprop:Generator_TableVarName="tableSavedGame_Entity" msprop:Generator_TablePropName="SavedGame_Entity" msprop:Generator_RowDeletingName="SavedGame_EntityRowDeleting" msprop:Generator_UserTableName="SavedGame_Entity" msprop:Generator_RowChangingName="SavedGame_EntityRowChanging" msprop:Generator_RowEvHandlerName="SavedGame_EntityRowChangeEventHandler" msprop:Generator_RowDeletedName="SavedGame_EntityRowDeleted" msprop:Generator_RowEvArgName="SavedGame_EntityRowChangeEvent" msprop:Generator_RowChangedName="SavedGame_EntityRowChanged" msprop:Generator_RowClassName="SavedGame_EntityRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="SavedGameId" msprop:Generator_ColumnVarNameInTable="columnSavedGameId" msprop:Generator_ColumnPropNameInRow="SavedGameId" msprop:Generator_ColumnPropNameInTable="SavedGameIdColumn" msprop:Generator_UserColumnName="SavedGameId" type="xs:int" />
               <xs:element name="EntityId" msprop:Generator_ColumnVarNameInTable="columnEntityId" msprop:Generator_ColumnPropNameInRow="EntityId" msprop:Generator_ColumnPropNameInTable="EntityIdColumn" msprop:Generator_UserColumnName="EntityId" type="xs:int" />
             </xs:sequence>
           </xs:complexType>
@@ -140,56 +147,64 @@
       <xs:selector xpath=".//mstns:Level" />
       <xs:field xpath="mstns:Number" />
     </xs:unique>
-    <xs:unique name="Level_EntityTemplate_Constraint1" msdata:ConstraintName="Constraint1" msdata:PrimaryKey="true">
-      <xs:selector xpath=".//mstns:Level_EntityTemplate" />
-      <xs:field xpath="mstns:EntityTemplateId" />
+    <xs:unique name="Level_Entity_Constraint1" msdata:ConstraintName="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:Level_Entity" />
+      <xs:field xpath="mstns:EntityId" />
       <xs:field xpath="mstns:LevelId" />
     </xs:unique>
     <xs:unique name="SavedGame_Constraint1" msdata:ConstraintName="Constraint1" msdata:PrimaryKey="true">
       <xs:selector xpath=".//mstns:SavedGame" />
       <xs:field xpath="mstns:Id" />
     </xs:unique>
-    <xs:unique name="SavedGame_UX_SavedGame">
+    <xs:unique name="Constraint2">
       <xs:selector xpath=".//mstns:SavedGame" />
       <xs:field xpath="mstns:Name" />
       <xs:field xpath="mstns:LevelId" />
+    </xs:unique>
+    <xs:unique name="SavedGame_Entity_Constraint1" msdata:ConstraintName="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:SavedGame_Entity" />
+      <xs:field xpath="mstns:SavedGameId" />
       <xs:field xpath="mstns:EntityId" />
     </xs:unique>
+    <xs:keyref name="FK_Entity_SavedGame_Entity" refer="Constraint1" msprop:rel_Generator_UserChildTable="SavedGame_Entity" msprop:rel_Generator_ChildPropName="GetSavedGame_EntityRows" msprop:rel_Generator_ParentPropName="EntityRow" msprop:rel_Generator_UserRelationName="FK_Entity_SavedGame_Entity" msprop:rel_Generator_RelationVarName="relationFK_Entity_SavedGame_Entity" msprop:rel_Generator_UserParentTable="Entity">
+      <xs:selector xpath=".//mstns:SavedGame_Entity" />
+      <xs:field xpath="mstns:EntityId" />
+    </xs:keyref>
+    <xs:keyref name="FK_SavedGame_SavedGame_Entity" refer="SavedGame_Constraint1" msprop:rel_Generator_UserChildTable="SavedGame_Entity" msprop:rel_Generator_ChildPropName="GetSavedGame_EntityRows" msprop:rel_Generator_ParentPropName="SavedGameRow" msprop:rel_Generator_UserRelationName="FK_SavedGame_SavedGame_Entity" msprop:rel_Generator_RelationVarName="relationFK_SavedGame_SavedGame_Entity" msprop:rel_Generator_UserParentTable="SavedGame">
+      <xs:selector xpath=".//mstns:SavedGame_Entity" />
+      <xs:field xpath="mstns:SavedGameId" />
+    </xs:keyref>
     <xs:keyref name="FK_Level_SavedGame" refer="Level_Constraint1" msprop:rel_Generator_UserChildTable="SavedGame" msprop:rel_Generator_ChildPropName="GetSavedGameRows" msprop:rel_Generator_ParentPropName="LevelRow" msprop:rel_Generator_UserRelationName="FK_Level_SavedGame" msprop:rel_Generator_RelationVarName="relationFK_Level_SavedGame" msprop:rel_Generator_UserParentTable="Level">
       <xs:selector xpath=".//mstns:SavedGame" />
       <xs:field xpath="mstns:LevelId" />
     </xs:keyref>
-    <xs:keyref name="FK_Entity_SavedGame" refer="Constraint1" msprop:rel_Generator_UserChildTable="SavedGame" msprop:rel_Generator_ChildPropName="GetSavedGameRows" msprop:rel_Generator_ParentPropName="EntityRow" msprop:rel_Generator_UserRelationName="FK_Entity_SavedGame" msprop:rel_Generator_RelationVarName="relationFK_Entity_SavedGame" msprop:rel_Generator_UserParentTable="Entity">
-      <xs:selector xpath=".//mstns:SavedGame" />
+    <xs:keyref name="Entity_Level_Entity" refer="Constraint1" msprop:rel_Generator_UserChildTable="Level_Entity" msprop:rel_Generator_ChildPropName="GetLevel_EntityRows" msprop:rel_Generator_ParentPropName="EntityRow" msprop:rel_Generator_UserRelationName="Entity_Level_Entity" msprop:rel_Generator_RelationVarName="relationEntity_Level_Entity" msprop:rel_Generator_UserParentTable="Entity">
+      <xs:selector xpath=".//mstns:Level_Entity" />
       <xs:field xpath="mstns:EntityId" />
     </xs:keyref>
-    <xs:keyref name="FK_Level_Level_EntityTemplate" refer="Level_Constraint1" msprop:rel_Generator_UserChildTable="Level_EntityTemplate" msprop:rel_Generator_ChildPropName="GetLevel_EntityTemplateRows" msprop:rel_Generator_ParentPropName="LevelRow" msprop:rel_Generator_UserRelationName="FK_Level_Level_EntityTemplate" msprop:rel_Generator_RelationVarName="relationFK_Level_Level_EntityTemplate" msprop:rel_Generator_UserParentTable="Level">
-      <xs:selector xpath=".//mstns:Level_EntityTemplate" />
+    <xs:keyref name="FK_Level_Level_EntityTemplate" refer="Level_Constraint1" msprop:rel_Generator_UserChildTable="Level_Entity" msprop:rel_Generator_ChildPropName="GetLevel_EntityRows" msprop:rel_Generator_ParentPropName="LevelRow" msprop:rel_Generator_UserRelationName="FK_Level_Level_EntityTemplate" msprop:rel_Generator_RelationVarName="relationFK_Level_Level_EntityTemplate" msprop:rel_Generator_UserParentTable="Level">
+      <xs:selector xpath=".//mstns:Level_Entity" />
       <xs:field xpath="mstns:LevelId" />
     </xs:keyref>
-    <xs:keyref name="FK_EntityTemplate_Level_EntityTemplate" refer="EntityTemplate_Constraint1" msprop:rel_Generator_UserChildTable="Level_EntityTemplate" msprop:rel_Generator_ChildPropName="GetLevel_EntityTemplateRows" msprop:rel_Generator_ParentPropName="EntityTemplateRow" msprop:rel_Generator_UserRelationName="FK_EntityTemplate_Level_EntityTemplate" msprop:rel_Generator_RelationVarName="relationFK_EntityTemplate_Level_EntityTemplate" msprop:rel_Generator_UserParentTable="EntityTemplate">
-      <xs:selector xpath=".//mstns:Level_EntityTemplate" />
-      <xs:field xpath="mstns:EntityTemplateId" />
-    </xs:keyref>
-    <xs:keyref name="FK_Entity_EntityTemplate" refer="Constraint1" msprop:rel_Generator_UserChildTable="EntityTemplate" msprop:rel_Generator_ChildPropName="GetEntityTemplateRows" msprop:rel_Generator_ParentPropName="EntityRow" msprop:rel_Generator_UserRelationName="FK_Entity_EntityTemplate" msprop:rel_Generator_RelationVarName="relationFK_Entity_EntityTemplate" msprop:rel_Generator_UserParentTable="Entity">
+    <xs:keyref name="FK_Entity_EntityTemplate" refer="Constraint1" msprop:rel_Generator_UserChildTable="EntityTemplate" msprop:rel_Generator_ChildPropName="GetEntityTemplateRows" msprop:rel_Generator_UserParentTable="Entity" msprop:rel_Generator_UserRelationName="FK_Entity_EntityTemplate" msprop:rel_Generator_RelationVarName="relationFK_Entity_EntityTemplate" msprop:rel_Generator_ParentPropName="EntityRow">
       <xs:selector xpath=".//mstns:EntityTemplate" />
       <xs:field xpath="mstns:EntityId" />
     </xs:keyref>
-    <xs:keyref name="FK_EntityComponent_EntityComponent_Data" refer="EntityComponent_Constraint1" msprop:rel_Generator_UserChildTable="EntityComponent_Data" msprop:rel_Generator_ChildPropName="GetEntityComponent_DataRows" msprop:rel_Generator_ParentPropName="EntityComponentRow" msprop:rel_Generator_UserRelationName="FK_EntityComponent_EntityComponent_Data" msprop:rel_Generator_RelationVarName="relationFK_EntityComponent_EntityComponent_Data" msprop:rel_Generator_UserParentTable="EntityComponent">
+    <xs:keyref name="FK_EntityComponent_EntityComponent_Data" refer="EntityComponent_Constraint1" msprop:rel_Generator_UserChildTable="EntityComponent_Data" msprop:rel_Generator_ChildPropName="GetEntityComponent_DataRows" msprop:rel_Generator_UserParentTable="EntityComponent" msprop:rel_Generator_UserRelationName="FK_EntityComponent_EntityComponent_Data" msprop:rel_Generator_RelationVarName="relationFK_EntityComponent_EntityComponent_Data" msprop:rel_Generator_ParentPropName="EntityComponentRow">
       <xs:selector xpath=".//mstns:EntityComponent_Data" />
       <xs:field xpath="mstns:EntityComponentId" />
     </xs:keyref>
-    <xs:keyref name="FK_EntityComponent_EntityComponent_ArrayData" refer="EntityComponent_Constraint1" msprop:rel_Generator_UserChildTable="EntityComponent_ArrayData" msprop:rel_Generator_ChildPropName="GetEntityComponent_ArrayDataRows" msprop:rel_Generator_ParentPropName="EntityComponentRow" msprop:rel_Generator_UserRelationName="FK_EntityComponent_EntityComponent_ArrayData" msprop:rel_Generator_RelationVarName="relationFK_EntityComponent_EntityComponent_ArrayData" msprop:rel_Generator_UserParentTable="EntityComponent">
+    <xs:keyref name="FK_EntityComponent_EntityComponent_ArrayData" refer="EntityComponent_Constraint1" msprop:rel_Generator_UserChildTable="EntityComponent_ArrayData" msprop:rel_Generator_ChildPropName="GetEntityComponent_ArrayDataRows" msprop:rel_Generator_UserParentTable="EntityComponent" msprop:rel_Generator_UserRelationName="FK_EntityComponent_EntityComponent_ArrayData" msprop:rel_Generator_RelationVarName="relationFK_EntityComponent_EntityComponent_ArrayData" msprop:rel_Generator_ParentPropName="EntityComponentRow">
       <xs:selector xpath=".//mstns:EntityComponent_ArrayData" />
       <xs:field xpath="mstns:EntityComponentId" />
     </xs:keyref>
-    <xs:keyref name="FK_Entity_EntityComponent" refer="Constraint1" msprop:rel_Generator_UserChildTable="EntityComponent" msprop:rel_Generator_ChildPropName="GetEntityComponentRows" msprop:rel_Generator_ParentPropName="EntityRow" msprop:rel_Generator_UserRelationName="FK_Entity_EntityComponent" msprop:rel_Generator_RelationVarName="relationFK_Entity_EntityComponent" msprop:rel_Generator_UserParentTable="Entity">
-      <xs:selector xpath=".//mstns:EntityComponent" />
-      <xs:field xpath="mstns:EntityId" />
-    </xs:keyref>
-    <xs:keyref name="FK_Component_EntityComponent" refer="Component_Constraint1" msprop:rel_Generator_UserChildTable="EntityComponent" msprop:rel_Generator_ChildPropName="GetEntityComponentRows" msprop:rel_Generator_ParentPropName="ComponentRow" msprop:rel_Generator_UserRelationName="FK_Component_EntityComponent" msprop:rel_Generator_RelationVarName="relationFK_Component_EntityComponent" msprop:rel_Generator_UserParentTable="Component">
+    <xs:keyref name="FK_Component_EntityComponent" refer="Component_Constraint1" msprop:rel_Generator_UserChildTable="EntityComponent" msprop:rel_Generator_ChildPropName="GetEntityComponentRows" msprop:rel_Generator_UserParentTable="Component" msprop:rel_Generator_UserRelationName="FK_Component_EntityComponent" msprop:rel_Generator_RelationVarName="relationFK_Component_EntityComponent" msprop:rel_Generator_ParentPropName="ComponentRow">
       <xs:selector xpath=".//mstns:EntityComponent" />
       <xs:field xpath="mstns:ComponentId" />
+    </xs:keyref>
+    <xs:keyref name="FK_Entity_EntityComponent" refer="Constraint1" msprop:rel_Generator_UserChildTable="EntityComponent" msprop:rel_Generator_ChildPropName="GetEntityComponentRows" msprop:rel_Generator_UserParentTable="Entity" msprop:rel_Generator_UserRelationName="FK_Entity_EntityComponent" msprop:rel_Generator_RelationVarName="relationFK_Entity_EntityComponent" msprop:rel_Generator_ParentPropName="EntityRow">
+      <xs:selector xpath=".//mstns:EntityComponent" />
+      <xs:field xpath="mstns:EntityId" />
     </xs:keyref>
   </xs:element>
 </xs:schema>

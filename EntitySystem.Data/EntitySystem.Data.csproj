@@ -42,10 +42,6 @@
   <ItemGroup>
     <Compile Include="Db\DbConstant.cs" />
     <Compile Include="Db\DbEntityDataAdapter.cs" />
-    <Compile Include="Db\EntityDataSet.cs">
-      <DependentUpon>EntityDataSet.xsd</DependentUpon>
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Db\EntityDataSet.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
