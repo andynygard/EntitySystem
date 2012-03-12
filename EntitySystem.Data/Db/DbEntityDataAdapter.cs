@@ -1,6 +1,7 @@
 ﻿namespace EntitySystem.Data.Db
 {
     using System;
+    using System.Collections.Generic;
     using System.Data;
     using System.Data.Common;
     using EntitySystem.Entity;
@@ -62,7 +63,30 @@
         /// <returns>An array of level information.</returns>
         public LevelInfo[] GetLevels()
         {
-            throw new NotImplementedException();
+            var levels = new List<LevelInfo>();
+
+            using (DbConnection connection = this.CreateConnection())
+            {
+                connection.Open();
+
+                using (DbCommand command = this.CreateCommandGetLevels(connection))
+                {
+                    using (DbDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var level = new LevelInfo(
+                                Convert.ToInt32(reader["Number"]),
+                                Convert.ToString(reader["Name"]),
+                                Convert.ToString(reader["Description"]));
+
+                            levels.Add(level);
+                        }
+                    }
+                }
+            }
+
+            return levels.ToArray();
         }
 
         /// <summary>
@@ -123,6 +147,18 @@
         }
 
         /// <summary>
+        /// Create a command to get the list of available levels.
+        /// </summary>
+        /// <param name="connection">The connection object.</param>
+        /// <returns>The command object.</returns>
+        private DbCommand CreateCommandGetLevels(DbConnection connection)
+        {
+            DbCommand command = connection.CreateCommand();
+            command.CommandText = DbConstant.GetLevels;
+            return command;
+        }
+
+        /// <summary>
         /// Create a command to load the data of the given level.
         /// </summary>
         /// <param name="connection">The connection object.</param>
@@ -131,9 +167,7 @@
         private DbCommand CreateCommandLoadLevelData(DbConnection connection, int levelNum)
         {
             DbCommand command = connection.CreateCommand();
-
-            // Set the database query
-            command.CommandText = "";
+            command.CommandText = DbConstant.GetLevelData;
 
             // Set the query parameter
             DbParameter param = this.dbFactory.CreateParameter();
