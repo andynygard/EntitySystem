@@ -87,6 +87,12 @@
                 }
             }
 
+            // Perform transform if a transformer is specified
+            if (this.Transformer != null)
+            {
+                this.Transformer.TransformForLoad(entityManager);
+            }
+
             return false;
         }
 
