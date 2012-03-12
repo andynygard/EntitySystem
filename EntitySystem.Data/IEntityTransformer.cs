@@ -13,13 +13,13 @@
     public interface IEntityTransformer
     {
         /// <summary>
-        /// Transform the entities in the given EntityManager into a state that is ready for serialization.
+        /// Transform the entities in the given EntityManager into a state that is ready for deserialization.
         /// </summary>
         /// <param name="entityManager">The EntityManager to transform.</param>
         void TransformForLoad(EntityManager entityManager);
 
         /// <summary>
-        /// Transform the entities in the given EntityManager into a state that is ready for deserialization.
+        /// Transform the entities in the given EntityManager into a state that is ready for serialization.
         /// </summary>
         /// <param name="entityManager">The EntityManager to transform.</param>
         void TransformForSave(EntityManager entityManager);
