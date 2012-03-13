@@ -47,7 +47,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>EntityDataSet.xsd</DependentUpon>
     </Compile>
-    <Compile Include="EntityDataSetAdapter.cs" />
     <Compile Include="IEntityDataAdapter.cs" />
     <Compile Include="IEntityTransformer.cs" />
     <Compile Include="LevelInfo.cs" />
