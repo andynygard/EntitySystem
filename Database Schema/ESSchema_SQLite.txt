@@ -35,12 +35,6 @@ CREATE UNIQUE INDEX [UX_EntityComponent]
 ON [EntityComponent]
 ([EntityId], [ComponentId]);
 
-CREATE TABLE [Data] (
-	"Id"		integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-	"Value"		varchar NOT NULL,
-	"DataType"	varchar(250) NOT NULL
-);
-
 CREATE TABLE [DataArray] (
 	"Id"			integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	"Length"		integer NOT NULL,
@@ -60,13 +54,12 @@ CREATE TABLE [DataArrayItem] (
 CREATE TABLE [EntityComponent_Data] (
 	"EntityComponentId"	integer NOT NULL,
 	"Property"			varchar(50) NOT NULL,
-	"DataId"			integer NOT NULL,
+	"Value"				varchar NOT NULL,
+	"DataType"			varchar(250) NOT NULL,
     PRIMARY KEY ([EntityComponentId], [Property])
 ,
     FOREIGN KEY ([EntityComponentId])
-        REFERENCES [EntityComponent]([Id]),
-    FOREIGN KEY ([DataId])
-        REFERENCES [Data]([Id])
+        REFERENCES [EntityComponent]([Id])
 );
 
 CREATE TABLE [EntityComponent_DataArray] (
