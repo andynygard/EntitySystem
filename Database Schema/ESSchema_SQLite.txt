@@ -5,22 +5,22 @@ CREATE TABLE [Entity] (
 CREATE TABLE [EntityTemplate] (
 	"Id"		integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	"EntityId"	integer NOT NULL,
-	"Name"		varchar(50) NOT NULL COLLATE NOCASE
+	"Name"		varchar(50) NOT NULL
 ,
     FOREIGN KEY ([EntityId])
         REFERENCES [Entity]([Id])
 );
 
-CREATE UNIQUE INDEX [EntityTemplate_UX_EntityTemplate]
+CREATE UNIQUE INDEX [UX_EntityTemplate]
 ON [EntityTemplate]
 ([EntityId]);
 
 CREATE TABLE [Component] (
 	"Id"		integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-	"ClassName"	varchar(250) NOT NULL COLLATE NOCASE
+	"ClassName"	varchar(250) NOT NULL
 );
 
-CREATE TABLE "EntityComponent" (
+CREATE TABLE [EntityComponent] (
 	"Id"			integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	"EntityId"		integer NOT NULL,
 	"ComponentId"	integer NOT NULL
@@ -31,42 +31,64 @@ CREATE TABLE "EntityComponent" (
         REFERENCES [Entity]([Id])
 );
 
-CREATE UNIQUE INDEX [EntityComponent_UX_EntityComponent]
+CREATE UNIQUE INDEX [UX_EntityComponent]
 ON [EntityComponent]
 ([EntityId], [ComponentId]);
 
-CREATE TABLE "EntityComponent_Data" (
+CREATE TABLE [Data] (
+	"Id"		integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	"Value"		varchar NOT NULL,
+	"DataType"	varchar(250) NOT NULL
+);
+
+CREATE TABLE [DataArray] (
+	"Id"			integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	"Length"		integer NOT NULL,
+	"DataType"		varchar(250) NOT NULL
+);
+
+CREATE TABLE [DataArrayItem] (
+	"DataArrayId"	integer NOT NULL,
+	"Index"			integer NOT NULL,
+	"Value"			varchar NOT NULL,
+    PRIMARY KEY ([DataArrayId], [Index])
+,
+    FOREIGN KEY ([DataArrayId])
+        REFERENCES [DataArray]([Id])
+);
+
+CREATE TABLE [EntityComponent_Data] (
 	"EntityComponentId"	integer NOT NULL,
-	"Property"			varchar(50) NOT NULL COLLATE NOCASE,
-	"Value"				varchar NOT NULL COLLATE NOCASE,
-	"DataType"			varchar(250) NOT NULL COLLATE NOCASE,
+	"Property"			varchar(50) NOT NULL,
+	"DataId"			integer NOT NULL,
     PRIMARY KEY ([EntityComponentId], [Property])
 ,
     FOREIGN KEY ([EntityComponentId])
-        REFERENCES [EntityComponent]([Id])
+        REFERENCES [EntityComponent]([Id]),
+    FOREIGN KEY ([DataId])
+        REFERENCES [Data]([Id])
 );
 
-CREATE TABLE "EntityComponent_ArrayData" (
+CREATE TABLE [EntityComponent_DataArray] (
 	"EntityComponentId"	integer NOT NULL,
-	"ComponentId"		integer NOT NULL,
-	"Property"			varchar(50) NOT NULL COLLATE NOCASE,
-	"Index"				integer NOT NULL,
-	"Value"				varchar NOT NULL COLLATE NOCASE,
-	"DataType"			varchar(250) NOT NULL COLLATE NOCASE,
-    PRIMARY KEY ([EntityComponentId], [Property], [Index])
+	"Property"			varchar(50) NOT NULL,
+	"DataArrayId"		integer NOT NULL,
+    PRIMARY KEY ([EntityComponentId], [Property])
 ,
     FOREIGN KEY ([EntityComponentId])
-        REFERENCES [EntityComponent]([Id])
+        REFERENCES [EntityComponent]([Id]),
+    FOREIGN KEY ([DataArrayId])
+        REFERENCES [DataArray]([Id])
 );
 
 CREATE TABLE [Level] (
 	"Id"			integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	"Number"		integer NOT NULL,
-	"Name"			varchar(50) NOT NULL COLLATE NOCASE,
-	"Description"	varchar(250) NOT NULL COLLATE NOCASE
+	"Name"			varchar(50) NOT NULL,
+	"Description"	varchar(250) NOT NULL
 );
 
-CREATE UNIQUE INDEX [Level_UX_Level]
+CREATE UNIQUE INDEX [UX_Level]
 ON [Level]
 ([Number]);
 
@@ -78,19 +100,19 @@ CREATE TABLE [Level_Entity] (
     FOREIGN KEY ([LevelId])
         REFERENCES [Level]([Id]),
     FOREIGN KEY ([EntityId])
-        REFERENCES [EntityId]([Id])
+        REFERENCES [Entity]([Id])
 );
 
 CREATE TABLE [SavedGame] (
 	"Id"		integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-	"Name"		varchar(50) NOT NULL COLLATE NOCASE,
+	"Name"		varchar(50) NOT NULL,
 	"LevelId"	integer NOT NULL
 ,
     FOREIGN KEY ([LevelId])
         REFERENCES [Level]([Id])
 );
 
-CREATE UNIQUE INDEX [SavedGame_UX_SavedGame]
+CREATE UNIQUE INDEX [UX_SavedGame]
 ON [SavedGame]
 ([Name]);
 
@@ -102,5 +124,5 @@ CREATE TABLE [SavedGame_Entity] (
     FOREIGN KEY ([SavedGameId])
         REFERENCES [SavedGame]([Id]),
     FOREIGN KEY ([EntityId])
-        REFERENCES [EntityId]([Id])
+        REFERENCES [Entity]([Id])
 );
