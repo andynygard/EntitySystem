@@ -9,7 +9,7 @@
     /// <summary>
     /// Serves a bridge between the entity system and a database for loading and saving level data.
     /// </summary>
-    public class DbEntityDataAdapter : IEntityDataAdapter
+    public class DbEntityDataAdapter : EntityDataAdapter
     {
         #region Private Variables
 
@@ -45,23 +45,13 @@
 
         #endregion
 
-        #region Properties
-
-        /// <summary>
-        /// Gets or sets the IEntityTransformer that is responsible for transforming entities into a serializable or
-        /// deserializable state.
-        /// </summary>
-        public IEntityTransformer Transformer { get; set; }
-
-        #endregion
-
         #region Public Methods
 
         /// <summary>
         /// Get the available levels.
         /// </summary>
         /// <returns>An array of level information.</returns>
-        public LevelInfo[] GetLevels()
+        public override LevelInfo[] GetLevels()
         {
             var levels = new List<LevelInfo>();
 
@@ -89,13 +79,17 @@
             return levels.ToArray();
         }
 
+        #endregion
+
+        #region Protected Methods
+
         /// <summary>
         /// Load the level with the given level number.
         /// </summary>
         /// <param name="entityManager">The entity manager to be populated.</param>
         /// <param name="levelNum">The level number.</param>
         /// <returns>True if the level was loaded.</returns>
-        public bool LoadLevel(EntityManager entityManager, int levelNum)
+        protected override bool DoLoadLevel(EntityManager entityManager, int levelNum)
         {
             // Populate a data set with the level data
             var dataSet = new EntityDataSet();
@@ -111,12 +105,6 @@
                 }
             }
 
-            // Perform transform if a transformer is specified
-            if (this.Transformer != null)
-            {
-                this.Transformer.TransformForLoad(entityManager);
-            }
-
             return false;
         }
 
@@ -126,7 +114,7 @@
         /// <param name="entityManager">The entity manager of the level to be saved.</param>
         /// <param name="levelNum">The level number.</param>
         /// <returns>True if the level was saved.</returns>
-        public bool SaveLevel(EntityManager entityManager, int levelNum)
+        protected override bool DoSaveLevel(EntityManager entityManager, int levelNum)
         {
             throw new NotImplementedException();
         }
