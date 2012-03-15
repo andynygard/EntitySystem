@@ -91,20 +91,6 @@
         /// <returns>True if the level was loaded.</returns>
         protected override bool DoLoadLevel(EntityManager entityManager, int levelNum)
         {
-            // Populate a data set with the level data
-            var dataSet = new EntityDataSet();
-            using (DbConnection connection = this.CreateConnection())
-            {
-                using (DbCommand command = this.CreateCommandLoadLevelData(connection, levelNum))
-                {
-                    using (DbDataAdapter dataAdapter = this.dbFactory.CreateDataAdapter())
-                    {
-                        dataAdapter.SelectCommand = command;
-                        dataAdapter.Fill(dataSet);
-                    }
-                }
-            }
-
             return false;
         }
 
@@ -116,7 +102,7 @@
         /// <returns>True if the level was saved.</returns>
         protected override bool DoSaveLevel(EntityManager entityManager, int levelNum)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         #endregion
