@@ -60,7 +60,7 @@
 
                 using (DbCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = DbConstant.GetLevels;
+                    command.CommandText = DbQuery.GetLevels;
 
                     using (DbDataReader reader = command.ExecuteReader())
                     {

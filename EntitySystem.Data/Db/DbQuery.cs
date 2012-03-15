@@ -1,9 +1,9 @@
 ﻿namespace EntitySystem.Data.Db
 {
     /// <summary>
-    /// Defines constants used for an entity system database.
+    /// Defines the queries used for an entity system database.
     /// </summary>
-    public static class DbConstant
+    public static class DbQuery
     {
         /// <summary>
         /// Query to fetch the available levels.
