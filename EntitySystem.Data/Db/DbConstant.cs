@@ -24,6 +24,36 @@
         public const string GetLevelData = @"
             ";
 
+
+        /// <summary>
+        /// Query to create a new entity id and select its Id.
+        /// </summary>
+        public const string CreateEntity = @"
+            INSERT INTO Entity (Id)
+            VALUES (NULL)
+            ;
+            SELECT
+                seq AS Id
+            FROM
+                SQLITE_SEQUENCE    
+            WHERE
+                 name = 'Entity'";
+
+        /// <summary>
+        /// Query to create a new component and select its id.
+        /// </summary>
+        public const string CreateComponent = @"
+            INSERT INTO Component (Id, Classname)
+            VALUES (NULL, @Classname)
+            ;
+            SELECT
+                seq AS Id
+            FROM
+                SQLITE_SEQUENCE    
+            WHERE
+                 name = 'Component'
+";
+
         /// <summary>
         /// Query parameter.
         /// </summary>
