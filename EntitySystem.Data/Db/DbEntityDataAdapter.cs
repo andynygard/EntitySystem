@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Data;
     using System.Data.Common;
     using EntitySystem.Entity;
 
@@ -59,8 +58,10 @@
             {
                 connection.Open();
 
-                using (DbCommand command = this.CreateCommandGetLevels(connection))
+                using (DbCommand command = connection.CreateCommand())
                 {
+                    command.CommandText = DbConstant.GetLevels;
+
                     using (DbDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
@@ -118,39 +119,6 @@
             DbConnection connection = this.dbFactory.CreateConnection();
             connection.ConnectionString = this.connectionString;
             return connection;
-        }
-
-        /// <summary>
-        /// Create a command to get the list of available levels.
-        /// </summary>
-        /// <param name="connection">The connection object.</param>
-        /// <returns>The command object.</returns>
-        private DbCommand CreateCommandGetLevels(DbConnection connection)
-        {
-            DbCommand command = connection.CreateCommand();
-            command.CommandText = DbConstant.GetLevels;
-            return command;
-        }
-
-        /// <summary>
-        /// Create a command to load the data of the given level.
-        /// </summary>
-        /// <param name="connection">The connection object.</param>
-        /// <param name="levelNum">The level number to load.</param>
-        /// <returns>The command object.</returns>
-        private DbCommand CreateCommandLoadLevelData(DbConnection connection, int levelNum)
-        {
-            DbCommand command = connection.CreateCommand();
-            command.CommandText = DbConstant.GetLevelData;
-
-            // Set the query parameter
-            DbParameter param = this.dbFactory.CreateParameter();
-            param.ParameterName = DbConstant.ParamLevelNumber;
-            param.DbType = DbType.Int32;
-            param.Value = levelNum;
-            command.Parameters.Add(param);
-
-            return command;
         }
 
         #endregion

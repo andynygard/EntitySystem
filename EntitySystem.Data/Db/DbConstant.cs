@@ -24,7 +24,6 @@
         public const string GetLevelData = @"
             ";
 
-
         /// <summary>
         /// Query to create a new entity id and select its Id.
         /// </summary>
