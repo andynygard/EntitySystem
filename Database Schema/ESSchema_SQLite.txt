@@ -1,5 +1,5 @@
 CREATE TABLE [Entity] (
-	"Id"	integer PRIMARY KEY NOT NULL
+	"Id"	integer PRIMARY KEY AUTOINCREMENT NOT NULL
 );
 
 CREATE TABLE [EntityTemplate] (
