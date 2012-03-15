@@ -58,10 +58,8 @@
             {
                 connection.Open();
 
-                using (DbCommand command = connection.CreateCommand())
+                using (DbCommand command = ESCommand.GetLevelInfo(connection))
                 {
-                    command.CommandText = DbQuery.GetLevels;
-
                     using (DbDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())

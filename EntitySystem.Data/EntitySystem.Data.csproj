@@ -40,7 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Db\DbQuery.cs" />
+    <Compile Include="Db\ESCommand.cs" />
     <Compile Include="Db\DbEntityDataAdapter.cs" />
     <Compile Include="EntityDataAdapter.cs" />
     <Compile Include="IEntityTransformer.cs" />
