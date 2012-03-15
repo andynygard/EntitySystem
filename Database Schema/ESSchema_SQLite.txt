@@ -17,7 +17,7 @@ ON [EntityTemplate]
 
 CREATE TABLE [Component] (
 	"Id"		integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-	"ClassName"	varchar(250) NOT NULL
+	"Classname"	varchar(250) NOT NULL
 );
 
 CREATE TABLE [EntityComponent] (
