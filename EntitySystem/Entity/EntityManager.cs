@@ -264,6 +264,8 @@
 
         /// <summary>
         /// Get an enumerator that iterates through all entity-components that are in the entity system.
+        /// <para />
+        /// Note: This is not ordered by entity.
         /// </summary>
         /// <returns>An enumerator object.</returns>
         public IEnumerator<KeyValuePair<int, IComponent>> GetEntityComponentEnumerator()
@@ -307,8 +309,6 @@
 
         /// <summary>
         /// Iterates over all entity-component pairs in an EntityManager.
-        /// <para />
-        /// Note: This is ordered in groups of component type (not entity!).
         /// </summary>
         private class EntityComponentEnumerator :
             IEnumerator<KeyValuePair<int, IComponent>>
