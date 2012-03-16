@@ -1,5 +1,6 @@
 ﻿namespace EntitySystem.Data.Db
 {
+    using System.Data;
     using System.Data.Common;
 
     /// <summary>
@@ -39,14 +40,14 @@
                     LEFT JOIN EntityComponent_Data ecd
                         ON ec.Id = ecd.EntityComponentId
                 WHERE
-                    l.Number = @LevelNumber
+                    l.Number = @Number
                 ORDER BY
                     ec.EntityId
                     ,ecd.EntityComponentId
                     ,ecd.Property";
 
             // Add parameters
-            command.Parameters[command.Parameters.Add(levelNumber)].ParameterName = "LevelNumber";
+            AddParameter(command, "Number", levelNumber, DbType.Int32);
 
             return command;
         }
@@ -85,7 +86,7 @@
                     LEFT JOIN ArrayData ad
                         ON a.Id = ad.ArrayId
                 WHERE
-                    l.Number = @LevelNumber
+                    l.Number = @Number
                 ORDER BY
                     ec.EntityId
                     ,eca.EntityComponentId
@@ -93,7 +94,7 @@
                     ,ad.[Index]";
 
             // Add parameters
-            command.Parameters[command.Parameters.Add(levelNumber)].ParameterName = "LevelNumber";
+            AddParameter(command, "Number", levelNumber, DbType.Int32);
 
             return command;
         }
@@ -169,8 +170,8 @@
                 SELECT seq AS Id FROM SQLITE_SEQUENCE WHERE name = 'EntityTemplate'";
 
             // Add parameters
-            command.Parameters[command.Parameters.Add(entityId)].ParameterName = "EntityId";
-            command.Parameters[command.Parameters.Add(name)].ParameterName = "Name";
+            AddParameter(command, "EntityId", entityId, DbType.Int32);
+            AddParameter(command, "Name", name, DbType.String);
 
             return command;
         }
@@ -191,7 +192,7 @@
                 SELECT seq AS Id FROM SQLITE_SEQUENCE WHERE name = 'Component'";
 
             // Add parameters
-            command.Parameters[command.Parameters.Add(classname)].ParameterName = "Classname";
+            AddParameter(command, "Classname", classname, DbType.String);
 
             return command;
         }
@@ -213,8 +214,8 @@
                 SELECT seq AS Id FROM SQLITE_SEQUENCE WHERE name = 'EntityComponent'";
 
             // Add parameters
-            command.Parameters[command.Parameters.Add(entityId)].ParameterName = "EntityId";
-            command.Parameters[command.Parameters.Add(componentId)].ParameterName = "ComponentId";
+            AddParameter(command, "EntityId", entityId, DbType.Int32);
+            AddParameter(command, "ComponentId", componentId, DbType.Int32);
 
             return command;
         }
@@ -241,10 +242,10 @@
                 VALUES (@EntityComponentId, @Property, @Value, @DataType)";
 
             // Add parameters
-            command.Parameters[command.Parameters.Add(entityComponentId)].ParameterName = "EntityComponentId";
-            command.Parameters[command.Parameters.Add(property)].ParameterName = "Property";
-            command.Parameters[command.Parameters.Add(value)].ParameterName = "Value";
-            command.Parameters[command.Parameters.Add(dataType)].ParameterName = "DataType";
+            AddParameter(command, "EntityComponentId", entityComponentId, DbType.Int32);
+            AddParameter(command, "Property", property, DbType.String);
+            AddParameter(command, "Value", value, DbType.String);
+            AddParameter(command, "DataType", dataType, DbType.String);
 
             return command;
         }
@@ -283,10 +284,10 @@
                 SELECT seq AS Id FROM SQLITE_SEQUENCE WHERE name = 'Array'";
 
             // Add parameters
-            command.Parameters[command.Parameters.Add(entityComponentId)].ParameterName = "EntityComponentId";
-            command.Parameters[command.Parameters.Add(property)].ParameterName = "Property";
-            command.Parameters[command.Parameters.Add(length)].ParameterName = "Length";
-            command.Parameters[command.Parameters.Add(dataType)].ParameterName = "DataType";
+            AddParameter(command, "EntityComponentId", entityComponentId, DbType.Int32);
+            AddParameter(command, "Property", property, DbType.String);
+            AddParameter(command, "Length", length, DbType.Int32);
+            AddParameter(command, "DataType", dataType, DbType.String);
 
             return command;
         }
@@ -311,9 +312,9 @@
                 VALUES (@ArrayId, @Index, @Value)";
 
             // Add parameters
-            command.Parameters[command.Parameters.Add(arrayId)].ParameterName = "ArrayId";
-            command.Parameters[command.Parameters.Add(index)].ParameterName = "Index";
-            command.Parameters[command.Parameters.Add(value)].ParameterName = "Value";
+            AddParameter(command, "ArrayId", arrayId, DbType.Int32);
+            AddParameter(command, "Index", index, DbType.Int32);
+            AddParameter(command, "Value", value, DbType.String);
 
             return command;
         }
@@ -340,9 +341,30 @@
                 SELECT seq AS Id FROM SQLITE_SEQUENCE WHERE name = 'Level'";
 
             // Add parameters
-            command.Parameters[command.Parameters.Add(number)].ParameterName = "Number";
-            command.Parameters[command.Parameters.Add(name)].ParameterName = "Name";
-            command.Parameters[command.Parameters.Add(description)].ParameterName = "Description";
+            AddParameter(command, "Number", number, DbType.Int32);
+            AddParameter(command, "Name", name, DbType.String);
+            AddParameter(command, "Description", description, DbType.String);
+
+            return command;
+        }
+
+        /// <summary>
+        /// Create a command to clear the given level.
+        /// </summary>
+        /// <param name="connection">The database connection.</param>
+        /// <param name="number">The level number.</param>
+        /// <returns>The command object.</returns>
+        public static DbCommand ClearLevel(DbConnection connection, int number)
+        {
+            DbCommand command = connection.CreateCommand();
+            command.CommandText = @"
+                DELETE FROM
+                    Level
+                WHERE
+                    Number = @Number";
+
+            // Add parameters
+            AddParameter(command, "Number", number, DbType.Int32);
 
             return command;
         }
@@ -362,8 +384,8 @@
                 VALUES (@LevelId, @EntityId)";
 
             // Add parameters
-            command.Parameters[command.Parameters.Add(levelId)].ParameterName = "LevelId";
-            command.Parameters[command.Parameters.Add(entityId)].ParameterName = "EntityId";
+            AddParameter(command, "LevelId", levelId, DbType.Int32);
+            AddParameter(command, "EntityId", entityId, DbType.Int32);
 
             return command;
         }
@@ -389,8 +411,8 @@
                 SELECT seq AS Id FROM SQLITE_SEQUENCE WHERE name = 'Level'";
 
             // Add parameters
-            command.Parameters[command.Parameters.Add(name)].ParameterName = "Name";
-            command.Parameters[command.Parameters.Add(levelId)].ParameterName = "LevelId";
+            AddParameter(command, "Name", name, DbType.String);
+            AddParameter(command, "LevelId", levelId, DbType.Int32);
 
             return command;
         }
@@ -410,13 +432,33 @@
                 VALUES (@SavedGameId, @EntityId)";
 
             // Add parameters
-            command.Parameters[command.Parameters.Add(savedGameId)].ParameterName = "SavedGameId";
-            command.Parameters[command.Parameters.Add(entityId)].ParameterName = "EntityId";
+            AddParameter(command, "SavedGameId", savedGameId, DbType.Int32);
+            AddParameter(command, "EntityId", entityId, DbType.Int32);
 
             return command;
         }
 
         #endregion
+
+        #endregion
+
+        #region Private Methods
+
+        /// <summary>
+        /// Add a parameter to the given command.
+        /// </summary>
+        /// <param name="command">The command the paramater will be added to.</param>
+        /// <param name="name">The name of the parameter.</param>
+        /// <param name="value">The value of the parameter.</param>
+        /// <param name="dataType">The data type of the parameter.</param>
+        private static void AddParameter(DbCommand command, string name, object value, DbType dataType)
+        {
+            DbParameter param = command.CreateParameter();
+            param.ParameterName = name;
+            param.Value = value;
+            param.DbType = dataType;
+            command.Parameters.Add(param);
+        }
 
         #endregion
     }
