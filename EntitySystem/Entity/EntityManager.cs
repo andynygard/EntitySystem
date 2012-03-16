@@ -262,6 +262,15 @@
             }
         }
 
+        /// <summary>
+        /// Get an enumerator that iterates through all entity-components that are in the entity system.
+        /// </summary>
+        /// <returns>An enumerator object.</returns>
+        public IEnumerator<KeyValuePair<int, IComponent>> GetEntityComponentEnumerator()
+        {
+            return new EntityComponentEnumerator(this);
+        }
+
         #endregion
 
         #region Private Methods
@@ -301,7 +310,7 @@
         /// <para />
         /// Note: This is ordered in groups of component type (not entity!).
         /// </summary>
-        public class EntityComponentEnumerator :
+        private class EntityComponentEnumerator :
             IEnumerator<KeyValuePair<int, IComponent>>
         {
             /// <summary>
@@ -319,7 +328,7 @@
             /// Initializes a new instance of the EntityComponentEnumerator class.
             /// </summary>
             /// <param name="entityManager">The entity manager to iterate over.</param>
-            private EntityComponentEnumerator(EntityManager entityManager)
+            public EntityComponentEnumerator(EntityManager entityManager)
             {
                 this.topEnumerator = entityManager.componentsByType.Values.GetEnumerator();
                 this.Reset();
