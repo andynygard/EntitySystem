@@ -35,20 +35,20 @@ CREATE UNIQUE INDEX [UX_EntityComponent]
 ON [EntityComponent]
 ([EntityId], [ComponentId]);
 
-CREATE TABLE [DataArray] (
+CREATE TABLE [Array] (
 	"Id"			integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	"Length"		integer NOT NULL,
 	"DataType"		varchar(250) NOT NULL
 );
 
-CREATE TABLE [DataArrayItem] (
-	"DataArrayId"	integer NOT NULL,
+CREATE TABLE [ArrayData] (
+	"ArrayId"	integer NOT NULL,
 	"Index"			integer NOT NULL,
 	"Value"			varchar NOT NULL,
-    PRIMARY KEY ([DataArrayId], [Index])
+    PRIMARY KEY ([ArrayId], [Index])
 ,
-    FOREIGN KEY ([DataArrayId])
-        REFERENCES [DataArray]([Id])
+    FOREIGN KEY ([ArrayId])
+        REFERENCES [Array]([Id])
 );
 
 CREATE TABLE [EntityComponent_Data] (
@@ -62,16 +62,16 @@ CREATE TABLE [EntityComponent_Data] (
         REFERENCES [EntityComponent]([Id])
 );
 
-CREATE TABLE [EntityComponent_DataArray] (
+CREATE TABLE [EntityComponent_Array] (
 	"EntityComponentId"	integer NOT NULL,
 	"Property"			varchar(50) NOT NULL,
-	"DataArrayId"		integer NOT NULL,
+	"ArrayId"		integer NOT NULL,
     PRIMARY KEY ([EntityComponentId], [Property])
 ,
     FOREIGN KEY ([EntityComponentId])
         REFERENCES [EntityComponent]([Id]),
-    FOREIGN KEY ([DataArrayId])
-        REFERENCES [DataArray]([Id])
+    FOREIGN KEY ([ArrayId])
+        REFERENCES [Array]([Id])
 );
 
 CREATE TABLE [Level] (
