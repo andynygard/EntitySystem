@@ -295,5 +295,116 @@
         }
 
         #endregion
+
+        /// <summary>
+        /// Iterates over all entity-component pairs in an EntityManager.
+        /// <para />
+        /// Note: This is ordered in groups of component type (not entity!).
+        /// </summary>
+        public class EntityComponentEnumerator :
+            IEnumerator<KeyValuePair<int, IComponent>>
+        {
+            /// <summary>
+            /// The enumerator for the top-level dictionary in the entity manager for which the enumerator of each
+            /// component dictionary (set to currentEnumerator) is iterated over.
+            /// </summary>
+            private IEnumerator<Dictionary<int, IComponent>> topEnumerator;
+
+            /// <summary>
+            /// The enumerator for the dictionary at the current element of topEnumerator.
+            /// </summary>
+            private IEnumerator<KeyValuePair<int, IComponent>> currentEnumerator;
+
+            /// <summary>
+            /// Initializes a new instance of the EntityComponentEnumerator class.
+            /// </summary>
+            /// <param name="entityManager">The entity manager to iterate over.</param>
+            private EntityComponentEnumerator(EntityManager entityManager)
+            {
+                this.topEnumerator = entityManager.componentsByType.Values.GetEnumerator();
+                this.Reset();
+            }
+
+            /// <summary>
+            /// Gets the element in the collection at the current position of the enumerator.
+            /// </summary>
+            public KeyValuePair<int, IComponent> Current
+            {
+                get
+                {
+                    if (this.topEnumerator == null)
+                    {
+                        throw new InvalidOperationException("Enumerator is before the first element in the collection.");
+                    }
+
+                    return this.currentEnumerator.Current;
+                }
+            }
+
+            /// <summary>
+            /// Gets the element in the collection at the current position of the enumerator.
+            /// </summary>
+            object System.Collections.IEnumerator.Current
+            {
+                get { return this.Current; }
+            }
+
+            /// <summary>
+            /// Advances the enumerator to the next element of the collection.
+            /// </summary>
+            /// <returns>True if the enumerator was successfully advanced to the next element.</returns>
+            public bool MoveNext()
+            {
+                // If the current enumerator is null then this is either the first step or we reached the end of the
+                // *previous* currentEnumerator
+                if (this.currentEnumerator == null)
+                {
+                    // Move topEnumerator to the next element
+                    if (!this.topEnumerator.MoveNext())
+                    {
+                        // There are no more elements
+                        return false;
+                    }
+
+                    // Set currentEnumerator to topEnumerator's current element's enumerator
+                    this.currentEnumerator = this.topEnumerator.Current.GetEnumerator();
+                }
+
+                // Move to the next element in the current enumerator
+                if (this.currentEnumerator.MoveNext())
+                {
+                    return true;
+                }
+                else
+                {
+                    // There are no more elements in the current enumerator, so recursively call this method to move to
+                    // the next element in the top enumerator
+                    this.currentEnumerator = null;
+                    return this.MoveNext();
+                }
+            }
+
+            /// <summary>
+            /// Sets the enumerator to its initial position, which is before the first element in the collection.
+            /// </summary>
+            public void Reset()
+            {
+                this.topEnumerator.Reset();
+                this.currentEnumerator = null;
+            }
+
+            /// <summary>
+            /// Dispose the enumerator.
+            /// </summary>
+            public void Dispose()
+            {
+                this.topEnumerator.Dispose();
+
+                if (this.currentEnumerator != null)
+                {
+                    this.currentEnumerator.Dispose();
+                }
+            }
+        }
     }
 }
