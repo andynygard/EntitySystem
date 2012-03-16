@@ -9,7 +9,8 @@
     /// <para />
     /// This class is not thread safe.
     /// </summary>
-    public class EntityManager
+    public class EntityManager :
+        IEnumerable<KeyValuePair<int, IComponent>>
     {
         #region Constants
 
@@ -268,9 +269,20 @@
         /// Note: This is not ordered by entity.
         /// </summary>
         /// <returns>An enumerator object.</returns>
-        public IEnumerator<KeyValuePair<int, IComponent>> GetEntityComponentEnumerator()
+        public IEnumerator<KeyValuePair<int, IComponent>> GetEnumerator()
         {
             return new EntityComponentEnumerator(this);
+        }
+
+        /// <summary>
+        /// Get an enumerator that iterates through all entity-components that are in the entity system.
+        /// <para />
+        /// Note: This is not ordered by entity.
+        /// </summary>
+        /// <returns>An enumerator object.</returns>
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
         }
 
         #endregion
