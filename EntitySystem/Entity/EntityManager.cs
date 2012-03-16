@@ -353,9 +353,10 @@
             {
                 get
                 {
-                    if (this.topEnumerator == null)
+                    if (this.currentEnumerator == null)
                     {
-                        throw new InvalidOperationException("Enumerator is before the first element in the collection.");
+                        throw new InvalidOperationException(
+                            "Enumerator is before the first or after the last element in the collection.");
                     }
 
                     return this.currentEnumerator.Current;
