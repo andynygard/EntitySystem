@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Data.Common;
+    using EntitySystem.Component;
     using EntitySystem.Entity;
 
     /// <summary>
@@ -101,7 +102,48 @@
         /// <returns>True if the level was saved.</returns>
         protected override bool DoSaveLevel(EntityManager entityManager, int levelNum)
         {
-            return false;
+            try
+            {
+                using (DbConnection connection = this.CreateConnection())
+                {
+                    connection.Open();
+
+                    // Perform this in a transaction
+                    using (DbTransaction transaction = connection.BeginTransaction())
+                    {
+                        try
+                        {
+                            // Clear the level
+                            using (DbCommand command = ESCommand.ClearLevel(connection, levelNum))
+                            {
+                                command.ExecuteNonQuery();
+                            }
+
+                            // Iterate over all entity-components in the entity manager
+                            foreach (KeyValuePair<int, IComponent> kvp in entityManager)
+                            {
+                                // TODO
+                            }
+
+                            // Commit the transaction
+                            transaction.Commit();
+                        }
+                        catch (Exception ex)
+                        {
+                            // Rollback the transaction and throw the exception
+                            transaction.Rollback();
+                            throw ex;
+                        }
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception)
+            {
+                // TODO: Log exception
+                return false;
+            }
         }
 
         #endregion
