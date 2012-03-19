@@ -11,6 +11,15 @@
     /// </summary>
     public class DbEntityDataAdapter : EntityDataAdapter
     {
+        #region Constants
+
+        /// <summary>
+        /// A list of data types that 
+        /// </summary>
+        private readonly Type[] ValidDataTypes = new Type[] { };
+
+        #endregion
+
         #region Private Variables
 
         /// <summary>
@@ -119,10 +128,78 @@
                                 command.ExecuteNonQuery();
                             }
 
+                            // Key = local entity; Value = db entity id
+                            var addedEntities = new Dictionary<int, int>();
+                            var addedComponents = new Dictionary<IComponent, int>();
+                            var addedEntityComponents = new Dictionary<int, Dictionary<int, int>>();
+
                             // Iterate over all entity-components in the entity manager
                             foreach (KeyValuePair<int, IComponent> kvp in entityManager)
                             {
-                                // TODO
+                                int entity = kvp.Key;
+                                IComponent component = kvp.Value;
+
+                                // Get the database entity id
+                                int dbEntityId;
+                                if (addedEntities.ContainsKey(entity))
+                                {
+                                    dbEntityId = addedEntities[entity];
+                                }
+                                else
+                                {
+                                    // The entity doesn't exist so create it
+                                    using (DbCommand command = ESCommand.CreateEntity(connection))
+                                    {
+                                        dbEntityId = Convert.ToInt32(command.ExecuteScalar());
+                                    }
+
+                                    addedEntities.Add(entity, dbEntityId);
+                                }
+
+                                // Get the database component id
+                                int dbComponentId;
+                                if (addedComponents.ContainsKey(component))
+                                {
+                                    dbComponentId = addedComponents[component];
+                                }
+                                else
+                                {
+                                    // The component doesn't exist so create it
+                                    using (DbCommand command =
+                                        ESCommand.CreateComponent(connection, component.GetType().ToString()))
+                                    {
+                                        dbComponentId = Convert.ToInt32(command.ExecuteScalar());
+                                    }
+
+                                    addedComponents.Add(component, dbComponentId);
+                                }
+
+                                // Get the database entity-component id
+                                int dbEntityComponentId;
+                                if (addedEntityComponents.ContainsKey(dbEntityId) &&
+                                    addedEntityComponents[dbEntityId].ContainsKey(dbComponentId))
+                                {
+                                    dbEntityComponentId = addedEntityComponents[dbEntityId][dbComponentId];
+                                }
+                                else
+                                {
+                                    // The entity-component doesn't exist so create it
+                                    using (DbCommand command =
+                                        ESCommand.CreateEntityComponent(connection, dbEntityId, dbComponentId))
+                                    {
+                                        dbEntityComponentId = Convert.ToInt32(command.ExecuteScalar());
+                                    }
+
+                                    if (!addedEntityComponents.ContainsKey(dbEntityId))
+                                    {
+                                        addedEntityComponents.Add(dbEntityId, new Dictionary<int, int>());
+                                    }
+
+                                    addedEntityComponents[dbEntityId].Add(dbComponentId, dbEntityComponentId);
+                                }
+
+                                // Add the data for this component
+                                this.AddEntityComponentData(connection, dbEntityComponentId, component);
                             }
 
                             // Commit the transaction
@@ -159,6 +236,17 @@
             DbConnection connection = this.dbFactory.CreateConnection();
             connection.ConnectionString = this.connectionString;
             return connection;
+        }
+
+        /// <summary>
+        /// Add the data for the given entity-component to the database.
+        /// </summary>
+        /// <param name="connection">The database connection.</param>
+        /// <param name="entityComponentId">The entity-component id in the database.</param>
+        /// <param name="component">The component whose data will be added.</param>
+        private void AddEntityComponentData(DbConnection connection, int entityComponentId, IComponent component)
+        {
+            // TODO
         }
 
         #endregion
