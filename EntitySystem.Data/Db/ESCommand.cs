@@ -148,7 +148,7 @@
                 INSERT INTO Entity (Id)
                 VALUES (NULL)
                 ;
-                SELECT seq AS Id FROM SQLITE_SEQUENCE WHERE name = 'Entity'";
+                SELECT MAX(Id) AS Id FROM Entity";
 
             return command;
         }
@@ -167,7 +167,7 @@
                 INSERT INTO EntityTemplate (Id, EntityId, Name)
                 VALUES (NULL, @EntityId, @Name)
                 ;
-                SELECT seq AS Id FROM SQLITE_SEQUENCE WHERE name = 'EntityTemplate'";
+                SELECT Id FROM EntityTemplate WHERE EntityId = @EntityId";
 
             // Add parameters
             AddParameter(command, "EntityId", entityId, DbType.Int32);
@@ -189,7 +189,7 @@
                 INSERT INTO Component (Id, Classname)
                 VALUES (NULL, @Classname)
                 ;
-                SELECT seq AS Id FROM SQLITE_SEQUENCE WHERE name = 'Component'";
+                SELECT Id FROM Component WHERE Classname = @Classname";
 
             // Add parameters
             AddParameter(command, "Classname", classname, DbType.String);
@@ -211,7 +211,7 @@
                 INSERT INTO EntityComponent (Id, EntityId, ComponentId)
                 VALUES (NULL, @EntityId, @ComponentId)
                 ;
-                SELECT seq AS Id FROM SQLITE_SEQUENCE WHERE name = 'EntityComponent'";
+                SELECT Id FROM EntityComponent WHERE EntityId = @EntityId AND ComponentId = @ComponentId";
 
             // Add parameters
             AddParameter(command, "EntityId", entityId, DbType.Int32);
@@ -275,13 +275,14 @@
                 SELECT
                     @EntityComponentId
                     ,@Property
-                    seq AS ArrayId
+                    MAX(Id)
                 FROM
-                    SQLITE_SEQUENCE
+                    Array
                 WHERE
-                    name = 'Array'
+                    Length = @Length
+                    AND DataType = @DataType
                 ;
-                SELECT seq AS Id FROM SQLITE_SEQUENCE WHERE name = 'Array'";
+                SELECT MAX(Id) AS Id FROM Array WHERE Length = @Length AND DataType = @DataType";
 
             // Add parameters
             AddParameter(command, "EntityComponentId", entityComponentId, DbType.Int32);
@@ -338,7 +339,7 @@
                 INSERT INTO Level (Id, Number, Name, Description)
                 VALUES (NULL, @Number, @Name, @Description)
                 ;
-                SELECT seq AS Id FROM SQLITE_SEQUENCE WHERE name = 'Level'";
+                SELECT Id FROM Level WHERE Number = @Number";
 
             // Add parameters
             AddParameter(command, "Number", number, DbType.Int32);
@@ -408,7 +409,7 @@
                 INSERT INTO SavedGame (Id, Name, LevelId)
                 VALUES (NULL, @Name, @LevelId)
                 ;
-                SELECT seq AS Id FROM SQLITE_SEQUENCE WHERE name = 'Level'";
+                SELECT Id FROM SavedGame WHERE Name = @Name";
 
             // Add parameters
             AddParameter(command, "Name", name, DbType.String);
