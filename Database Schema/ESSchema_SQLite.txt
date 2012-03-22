@@ -4,11 +4,8 @@ CREATE TABLE [Entity] (
 
 CREATE TABLE [EntityTemplate] (
 	"Id"		integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-	"EntityId"	integer NOT NULL,
+	"EntityId"	integer NOT NULL REFERENCES [Entity]([Id]) ON DELETE CASCADE,
 	"Name"		varchar(50) NOT NULL
-,
-    FOREIGN KEY ([EntityId])
-        REFERENCES [Entity]([Id])
 );
 
 CREATE UNIQUE INDEX [UX_EntityTemplate]
@@ -22,13 +19,8 @@ CREATE TABLE [Component] (
 
 CREATE TABLE [EntityComponent] (
 	"Id"			integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-	"EntityId"		integer NOT NULL,
-	"ComponentId"	integer NOT NULL
-,
-    FOREIGN KEY ([ComponentId])
-        REFERENCES [Component]([Id]),
-    FOREIGN KEY ([EntityId])
-        REFERENCES [Entity]([Id])
+	"EntityId"		integer NOT NULL REFERENCES [Entity]([Id]) ON DELETE CASCADE,
+	"ComponentId"	integer NOT NULL REFERENCES [Component]([Id]) ON DELETE CASCADE
 );
 
 CREATE UNIQUE INDEX [UX_EntityComponent]
@@ -42,37 +34,34 @@ CREATE TABLE [Array] (
 );
 
 CREATE TABLE [ArrayData] (
-	"ArrayId"	integer NOT NULL,
+	"ArrayId"		integer NOT NULL REFERENCES [Array]([Id]) ON DELETE CASCADE,
 	"Index"			integer NOT NULL,
 	"Value"			varchar,
     PRIMARY KEY ([ArrayId], [Index])
-,
-    FOREIGN KEY ([ArrayId])
-        REFERENCES [Array]([Id])
 );
 
 CREATE TABLE [EntityComponent_Data] (
-	"EntityComponentId"	integer NOT NULL,
+	"EntityComponentId"	integer NOT NULL REFERENCES [EntityComponent]([Id]) ON DELETE CASCADE,
 	"Property"			varchar(50) NOT NULL,
 	"Value"				varchar,
 	"DataType"			varchar(250) NOT NULL,
     PRIMARY KEY ([EntityComponentId], [Property])
-,
-    FOREIGN KEY ([EntityComponentId])
-        REFERENCES [EntityComponent]([Id])
 );
 
 CREATE TABLE [EntityComponent_Array] (
-	"EntityComponentId"	integer NOT NULL,
+	"EntityComponentId"	integer NOT NULL REFERENCES [EntityComponent]([Id]) ON DELETE CASCADE,
 	"Property"			varchar(50) NOT NULL,
-	"ArrayId"		integer NOT NULL,
+	"ArrayId"			integer NOT NULL REFERENCES [Array]([Id]) ON DELETE CASCADE,
     PRIMARY KEY ([EntityComponentId], [Property])
-,
-    FOREIGN KEY ([EntityComponentId])
-        REFERENCES [EntityComponent]([Id]),
-    FOREIGN KEY ([ArrayId])
-        REFERENCES [Array]([Id])
 );
+
+CREATE TRIGGER TX_EntityComponent_Array_Delete_Array DELETE ON EntityComponent_Array
+BEGIN
+	DELETE FROM
+		Array
+	WHERE
+		Id = old.ArrayId;
+END;
 
 CREATE TABLE [Level] (
 	"Id"			integer PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -86,23 +75,23 @@ ON [Level]
 ([Number]);
 
 CREATE TABLE [Level_Entity] (
-	"LevelId"		integer NOT NULL,
-	"EntityId"		integer NOT NULL,
+	"LevelId"	integer NOT NULL REFERENCES [Level]([Id]) ON DELETE CASCADE,
+	"EntityId"	integer NOT NULL REFERENCES [Entity]([Id]) ON DELETE CASCADE,
     PRIMARY KEY ([LevelId], [EntityId])
-,
-    FOREIGN KEY ([LevelId])
-        REFERENCES [Level]([Id]),
-    FOREIGN KEY ([EntityId])
-        REFERENCES [Entity]([Id])
 );
+
+CREATE TRIGGER TX_Level_Entity_Delete_Entity DELETE ON Level_Entity
+BEGIN
+	DELETE FROM
+		Entity
+	WHERE
+		Id = old.EntityId;
+END;
 
 CREATE TABLE [SavedGame] (
 	"Id"		integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	"Name"		varchar(50) NOT NULL,
-	"LevelId"	integer NOT NULL
-,
-    FOREIGN KEY ([LevelId])
-        REFERENCES [Level]([Id])
+	"LevelId"	integer NOT NULL REFERENCES [Level]([Id]) ON DELETE CASCADE
 );
 
 CREATE UNIQUE INDEX [UX_SavedGame]
@@ -110,12 +99,15 @@ ON [SavedGame]
 ([Name]);
 
 CREATE TABLE [SavedGame_Entity] (
-	"SavedGameId"		integer NOT NULL,
-	"EntityId"		integer NOT NULL,
+	"SavedGameId"	integer NOT NULL REFERENCES [SavedGame]([Id]) ON DELETE CASCADE,
+	"EntityId"		integer NOT NULL REFERENCES [Entity]([Id]) ON DELETE CASCADE,
     PRIMARY KEY ([SavedGameId], [EntityId])
-,
-    FOREIGN KEY ([SavedGameId])
-        REFERENCES [SavedGame]([Id]),
-    FOREIGN KEY ([EntityId])
-        REFERENCES [Entity]([Id])
 );
+
+CREATE TRIGGER TX_SavedGame_Entity_Delete_Entity DELETE ON SavedGame_Entity
+BEGIN
+	DELETE FROM
+		Entity
+	WHERE
+		Id = old.EntityId;
+END;
