@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Data.Common;
+    using System.Reflection;
     using EntitySystem.Component;
     using EntitySystem.Entity;
 
@@ -246,7 +247,42 @@
         /// <param name="component">The component whose data will be added.</param>
         private void AddEntityComponentData(DbConnection connection, int entityComponentId, IComponent component)
         {
-            // TODO
+            // Get the public gettable properties
+            PropertyInfo[] properties = component.GetType().GetProperties(
+                BindingFlags.Instance |
+                BindingFlags.Public |
+                BindingFlags.GetProperty);
+
+            // Add each property
+            foreach (PropertyInfo property in properties)
+            {
+                // Check that the property is valid
+                if (!this.CanSerializeProperty(property))
+                {
+                    continue;
+                }
+
+                // TODO
+            }
+        }
+
+        /// <summary>
+        /// Get a value indicating whether the given property can be serialized.
+        /// </summary>
+        /// <param name="property">The property.</param>
+        /// <returns>True if the property can be serialized.</returns>
+        private bool CanSerializeProperty(PropertyInfo property)
+        {
+            // Check if this property has the ESIgnoreData attribute
+            foreach (Attribute attribute in property.GetCustomAttributes(true))
+            {
+                if (attribute is ESIgnoreData)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         #endregion
