@@ -275,7 +275,7 @@
                 SELECT
                     @EntityComponentId
                     ,@Property
-                    MAX(Id)
+                    ,MAX(Id)
                 FROM
                     Array
                 WHERE
@@ -309,7 +309,7 @@
         {
             DbCommand command = connection.CreateCommand();
             command.CommandText = @"
-                INSERT INTO ArrayData (ArrayId, Index, Value)
+                INSERT INTO ArrayData (ArrayId, [Index], Value)
                 VALUES (@ArrayId, @Index, @Value)";
 
             // Add parameters

@@ -262,8 +262,87 @@
                     continue;
                 }
 
-                // TODO
+                // Get the property value
+                object value = property.GetValue(component, null);
+
+                // Add the data
+                if (!property.PropertyType.IsArray)
+                {
+                    // This is not an array so simply add the data row
+                    string valueStr = value != null ? value.ToString() : null;
+                    using (DbCommand command = ESCommand.CreateEntityComponentData(
+                        connection,
+                        entityComponentId,
+                        property.Name,
+                        valueStr,
+                        property.PropertyType.ToString()))
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                }
+                else
+                {
+                    // Get the array info
+                    string dataType = property.PropertyType.GetElementType().ToString();
+                    int length = value != null ? (value as Array).Length : 0;
+
+                    // Create the array reference for the property
+                    int arrayId;
+                    using (DbCommand command = ESCommand.CreateEntityComponentArray(
+                        connection,
+                        entityComponentId,
+                        property.Name,
+                        length,
+                        dataType))
+                    {
+                        arrayId = Convert.ToInt32(command.ExecuteScalar());
+                    }
+
+                    // Now add each array element
+                    if (value != null)
+                    {
+                        var valueArray = (Array)value;
+                        for (int i = 0; i < valueArray.Length; i++)
+                        {
+                            object itemValue = valueArray.GetValue(i);
+                            string itemValueStr = itemValue != null ? itemValue.ToString() : null;
+                            using (DbCommand command = ESCommand.CreateEntityComponentArrayData(
+                                connection,
+                                arrayId,
+                                i,
+                                itemValueStr))
+                            {
+                                command.ExecuteNonQuery();
+                            }
+                        }
+                    }
+                }
             }
+        }
+
+        /// <summary>
+        /// Add the data for the given entity-component property to the database.
+        /// </summary>
+        /// <param name="connection">The database connection.</param>
+        /// <param name="entityComponentId">The entity-component id in the database.</param>
+        /// <param name="property">The property name.</param>
+        /// <param name="value">The data value.</param>
+        private void AddEntityComponentPropertyData(
+            DbConnection connection, int entityComponentId, string property, object value)
+        {
+
+        }
+
+        /// <summary>
+        /// Add the data for the given entity-component array to the database.
+        /// </summary>
+        /// <param name="connection">The database connection.</param>
+        /// <param name="arrayId">The array id in the database.</param>
+        /// <param name="index">The array index.</param>
+        /// <param name="value">The data value.</param>
+        private void AddEntityComponentPropertyArrayData(DbConnection connection, int arrayId, int index, object value)
+        {
+
         }
 
         /// <summary>
@@ -282,7 +361,27 @@
                 }
             }
 
-            return true;
+            // Check if the data type can be serialized
+            return this.CanSerializeType(property.PropertyType);
+        }
+
+        /// <summary>
+        /// Get a value indicating whether the given type can be serialized.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns>True if the type can be serialized.</returns>
+        private bool CanSerializeType(Type type)
+        {
+            if (type.IsArray)
+            {
+                // Check if the array's elements can be serialized
+                return this.CanSerializeType(type.GetElementType());
+            }
+            else
+            {
+                // The type can be serialized if it is not an object type
+                return Type.GetTypeCode(type) != TypeCode.Object;
+            }
         }
 
         #endregion
