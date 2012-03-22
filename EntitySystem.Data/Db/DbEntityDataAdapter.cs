@@ -123,8 +123,15 @@
                     {
                         try
                         {
+                            // Get the level id
+                            int dbLevelId;
+                            using (DbCommand command = ESCommand.GetLevelId(connection, levelNum))
+                            {
+                                dbLevelId = Convert.ToInt32(command.ExecuteScalar());
+                            }
+
                             // Clear the level
-                            using (DbCommand command = ESCommand.ClearLevel(connection, levelNum))
+                            using (DbCommand command = ESCommand.ClearLevel(connection, dbLevelId))
                             {
                                 command.ExecuteNonQuery();
                             }
@@ -152,6 +159,12 @@
                                     using (DbCommand command = ESCommand.CreateEntity(connection))
                                     {
                                         dbEntityId = Convert.ToInt32(command.ExecuteScalar());
+                                    }
+
+                                    // Add this entity to the level
+                                    using (DbCommand command = ESCommand.AddLevelEntity(connection, dbLevelId, dbEntityId))
+                                    {
+                                        command.ExecuteNonQuery();
                                     }
 
                                     addedEntities.Add(entity, dbEntityId);
@@ -287,7 +300,7 @@
                     int length = value != null ? (value as Array).Length : 0;
 
                     // Create the array reference for the property
-                    int arrayId;
+                    int dbArrayId;
                     using (DbCommand command = ESCommand.CreateEntityComponentArray(
                         connection,
                         entityComponentId,
@@ -295,7 +308,7 @@
                         length,
                         dataType))
                     {
-                        arrayId = Convert.ToInt32(command.ExecuteScalar());
+                        dbArrayId = Convert.ToInt32(command.ExecuteScalar());
                     }
 
                     // Now add each array element
@@ -308,7 +321,7 @@
                             string itemValueStr = itemValue != null ? itemValue.ToString() : null;
                             using (DbCommand command = ESCommand.CreateEntityComponentArrayData(
                                 connection,
-                                arrayId,
+                                dbArrayId,
                                 i,
                                 itemValueStr))
                             {

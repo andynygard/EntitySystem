@@ -350,22 +350,45 @@
         }
 
         /// <summary>
-        /// Create a command to clear the given level.
+        /// Create a command to get the level id for the given level number.
         /// </summary>
         /// <param name="connection">The database connection.</param>
         /// <param name="number">The level number.</param>
         /// <returns>The command object.</returns>
-        public static DbCommand ClearLevel(DbConnection connection, int number)
+        public static DbCommand GetLevelId(DbConnection connection, int number)
         {
             DbCommand command = connection.CreateCommand();
             command.CommandText = @"
-                DELETE FROM
+                SELECT
+                    Id
+                FROM
                     Level
                 WHERE
                     Number = @Number";
 
             // Add parameters
             AddParameter(command, "Number", number, DbType.Int32);
+
+            return command;
+        }
+
+        /// <summary>
+        /// Create a command to clear the given level.
+        /// </summary>
+        /// <param name="connection">The database connection.</param>
+        /// <param name="levelId">The level id.</param>
+        /// <returns>The command object.</returns>
+        public static DbCommand ClearLevel(DbConnection connection, int levelId)
+        {
+            DbCommand command = connection.CreateCommand();
+            command.CommandText = @"
+                DELETE FROM
+                    Level
+                WHERE
+                    Id = @LevelId";
+
+            // Add parameters
+            AddParameter(command, "LevelId", levelId, DbType.Int32);
 
             return command;
         }
