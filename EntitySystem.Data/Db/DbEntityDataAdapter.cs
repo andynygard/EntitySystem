@@ -127,7 +127,14 @@
                             int dbLevelId;
                             using (DbCommand command = ESCommand.GetLevelId(connection, levelNum))
                             {
-                                dbLevelId = Convert.ToInt32(command.ExecuteScalar());
+                                object result = command.ExecuteScalar();
+                                if (result == null)
+                                {
+                                    throw new ApplicationException(
+                                        string.Format("Level {0} does not exist in the database.", levelNum));
+                                }
+
+                                dbLevelId = Convert.ToInt32(result);
                             }
 
                             // Clear the level
