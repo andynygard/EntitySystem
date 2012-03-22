@@ -44,7 +44,7 @@ CREATE TABLE [Array] (
 CREATE TABLE [ArrayData] (
 	"ArrayId"	integer NOT NULL,
 	"Index"			integer NOT NULL,
-	"Value"			varchar NOT NULL,
+	"Value"			varchar,
     PRIMARY KEY ([ArrayId], [Index])
 ,
     FOREIGN KEY ([ArrayId])
@@ -54,7 +54,7 @@ CREATE TABLE [ArrayData] (
 CREATE TABLE [EntityComponent_Data] (
 	"EntityComponentId"	integer NOT NULL,
 	"Property"			varchar(50) NOT NULL,
-	"Value"				varchar NOT NULL,
+	"Value"				varchar,
 	"DataType"			varchar(250) NOT NULL,
     PRIMARY KEY ([EntityComponentId], [Property])
 ,
