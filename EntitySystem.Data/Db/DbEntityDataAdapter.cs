@@ -334,31 +334,6 @@
         }
 
         /// <summary>
-        /// Add the data for the given entity-component property to the database.
-        /// </summary>
-        /// <param name="connection">The database connection.</param>
-        /// <param name="entityComponentId">The entity-component id in the database.</param>
-        /// <param name="property">The property name.</param>
-        /// <param name="value">The data value.</param>
-        private void AddEntityComponentPropertyData(
-            DbConnection connection, int entityComponentId, string property, object value)
-        {
-
-        }
-
-        /// <summary>
-        /// Add the data for the given entity-component array to the database.
-        /// </summary>
-        /// <param name="connection">The database connection.</param>
-        /// <param name="arrayId">The array id in the database.</param>
-        /// <param name="index">The array index.</param>
-        /// <param name="value">The data value.</param>
-        private void AddEntityComponentPropertyArrayData(DbConnection connection, int arrayId, int index, object value)
-        {
-
-        }
-
-        /// <summary>
         /// Get a value indicating whether the given property can be serialized.
         /// </summary>
         /// <param name="property">The property.</param>
