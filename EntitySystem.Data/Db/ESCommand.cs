@@ -187,7 +187,11 @@
             DbCommand command = connection.CreateCommand();
             command.CommandText = @"
                 INSERT INTO Component (Id, Classname)
-                VALUES (NULL, @Classname)
+                SELECT
+                    NULL
+                    ,@Classname
+                WHERE
+                    NOT EXISTS (SELECT 1 FROM Component WHERE Classname = @Classname)
                 ;
                 SELECT Id FROM Component WHERE Classname = @Classname";
 
@@ -383,9 +387,9 @@
             DbCommand command = connection.CreateCommand();
             command.CommandText = @"
                 DELETE FROM
-                    Level
+                    Level_Entity
                 WHERE
-                    Id = @LevelId";
+                    LevelId = @LevelId";
 
             // Add parameters
             AddParameter(command, "LevelId", levelId, DbType.Int32);
