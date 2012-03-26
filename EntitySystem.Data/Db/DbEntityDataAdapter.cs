@@ -118,30 +118,15 @@
                 {
                     connection.Open();
 
-                    // Perform this in a transaction
-                    using (DbTransaction transaction = connection.BeginTransaction())
+                    using (var transaction = connection.BeginTransaction())
                     {
                         try
                         {
                             // Get the level id
-                            int dbLevelId;
-                            using (DbCommand command = ESCommand.GetLevelId(connection, levelNum))
-                            {
-                                object result = command.ExecuteScalar();
-                                if (result == null)
-                                {
-                                    throw new ApplicationException(
-                                        string.Format("Level {0} does not exist in the database.", levelNum));
-                                }
-
-                                dbLevelId = Convert.ToInt32(result);
-                            }
+                            int dbLevelId = this.GetLevelId(connection, levelNum);
 
                             // Clear the level
-                            using (DbCommand command = ESCommand.ClearLevel(connection, dbLevelId))
-                            {
-                                command.ExecuteNonQuery();
-                            }
+                            this.ClearLevel(connection, dbLevelId);
 
                             // Key = local entity; Value = db entity id
                             var addedEntities = new Dictionary<int, int>();
@@ -163,17 +148,7 @@
                                 else
                                 {
                                     // The entity doesn't exist so create it
-                                    using (DbCommand command = ESCommand.CreateEntity(connection))
-                                    {
-                                        dbEntityId = Convert.ToInt32(command.ExecuteScalar());
-                                    }
-
-                                    // Add this entity to the level
-                                    using (DbCommand command = ESCommand.AddLevelEntity(connection, dbLevelId, dbEntityId))
-                                    {
-                                        command.ExecuteNonQuery();
-                                    }
-
+                                    dbEntityId = this.CreateEntityInLevel(connection, dbLevelId);
                                     addedEntities.Add(entity, dbEntityId);
                                 }
 
@@ -186,12 +161,7 @@
                                 else
                                 {
                                     // The component doesn't exist so create it
-                                    using (DbCommand command =
-                                        ESCommand.CreateComponent(connection, component.GetType().ToString()))
-                                    {
-                                        dbComponentId = Convert.ToInt32(command.ExecuteScalar());
-                                    }
-
+                                    dbComponentId = this.CreateComponent(connection, component.GetType().ToString());
                                     addedComponents.Add(component, dbComponentId);
                                 }
 
@@ -205,18 +175,17 @@
                                 else
                                 {
                                     // The entity-component doesn't exist so create it
-                                    using (DbCommand command =
-                                        ESCommand.CreateEntityComponent(connection, dbEntityId, dbComponentId))
+                                    dbEntityComponentId = this.CreateEntityComponent(connection, dbEntityId, dbComponentId);
+                                    if (addedEntityComponents.ContainsKey(dbEntityId))
                                     {
-                                        dbEntityComponentId = Convert.ToInt32(command.ExecuteScalar());
+                                        addedEntityComponents[dbEntityId].Add(dbComponentId, dbEntityComponentId);
                                     }
-
-                                    if (!addedEntityComponents.ContainsKey(dbEntityId))
+                                    else
                                     {
-                                        addedEntityComponents.Add(dbEntityId, new Dictionary<int, int>());
+                                        addedEntityComponents.Add(
+                                            dbEntityId,
+                                            new Dictionary<int, int>() { { dbComponentId, dbEntityComponentId } });
                                     }
-
-                                    addedEntityComponents[dbEntityId].Add(dbComponentId, dbEntityComponentId);
                                 }
 
                                 // Add the data for this component
@@ -246,7 +215,7 @@
 
         #endregion
 
-        #region Private Methods
+        #region Database Methods
 
         /// <summary>
         /// Create a database connection.
@@ -257,6 +226,92 @@
             DbConnection connection = this.dbFactory.CreateConnection();
             connection.ConnectionString = this.connectionString;
             return connection;
+        }
+
+        /// <summary>
+        /// Get the database id for the given level.
+        /// </summary>
+        /// <param name="connection">The database connection.</param>
+        /// <param name="levelNum">The level number.</param>
+        /// <returns>The database id for the level.</returns>
+        private int GetLevelId(DbConnection connection, int levelNum)
+        {
+            using (DbCommand command = ESCommand.GetLevelId(connection, levelNum))
+            {
+                object result = command.ExecuteScalar();
+                if (result == null)
+                {
+                    throw new ApplicationException(
+                        string.Format("Level {0} does not exist in the database.", levelNum));
+                }
+
+                return Convert.ToInt32(result);
+            }
+        }
+
+        /// <summary>
+        /// Clear all data in the given level.
+        /// </summary>
+        /// <param name="connection">The database connection.</param>
+        /// <param name="dbLevelId">The database id for the level.</param>
+        private void ClearLevel(DbConnection connection, int dbLevelId)
+        {
+            using (DbCommand command = ESCommand.ClearLevel(connection, dbLevelId))
+            {
+                command.ExecuteNonQuery();
+            }
+        }
+
+        /// <summary>
+        /// Create an entity in the given level.
+        /// </summary>
+        /// <param name="connection">The database connection.</param>
+        /// <param name="dbLevelId">The database id for the level.</param>
+        /// <returns>The database id for the entity.</returns>
+        private int CreateEntityInLevel(DbConnection connection, int dbLevelId)
+        {
+            int dbEntityId;
+            using (DbCommand command = ESCommand.CreateEntity(connection))
+            {
+                dbEntityId = Convert.ToInt32(command.ExecuteScalar());
+            }
+
+            // Add this entity to the level
+            using (DbCommand command = ESCommand.AddLevelEntity(connection, dbLevelId, dbEntityId))
+            {
+                command.ExecuteNonQuery();
+            }
+
+            return dbEntityId;
+        }
+
+        /// <summary>
+        /// Create a component.
+        /// </summary>
+        /// <param name="connection">The database connection.</param>
+        /// <param name="classname">The component classname.</param>
+        /// <returns>The database id for the component.</returns>
+        private int CreateComponent(DbConnection connection, string classname)
+        {
+            using (DbCommand command = ESCommand.CreateComponent(connection, classname))
+            {
+                return Convert.ToInt32(command.ExecuteScalar());
+            }
+        }
+
+        /// <summary>
+        /// Create an entity-component.
+        /// </summary>
+        /// <param name="connection">The database connection.</param>
+        /// <param name="dbEntityId">The database id for the entity.</param>
+        /// <param name="dbComponentId">The database id for the component.</param>
+        /// <returns>The database id for the entity-component.</returns>
+        private int CreateEntityComponent(DbConnection connection, int dbEntityId, int dbComponentId)
+        {
+            using (DbCommand command = ESCommand.CreateEntityComponent(connection, dbEntityId, dbComponentId))
+            {
+                return Convert.ToInt32(command.ExecuteScalar());
+            }
         }
 
         /// <summary>
@@ -339,6 +394,10 @@
                 }
             }
         }
+
+        #endregion
+
+        #region Helper Methods
 
         /// <summary>
         /// Get a value indicating whether the given property can be serialized.
