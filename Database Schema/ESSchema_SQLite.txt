@@ -2,6 +2,15 @@ CREATE TABLE [Entity] (
 	"Id"	integer PRIMARY KEY AUTOINCREMENT NOT NULL
 );
 
+CREATE TRIGGER TX_Entity_Delete
+BEFORE DELETE ON Entity
+FOR EACH ROW BEGIN
+	DELETE FROM EntityTemplate WHERE EntityId = OLD.Id;
+	DELETE FROM EntityComponent WHERE EntityId = OLD.Id;
+	DELETE FROM Level_Entity WHERE EntityId = OLD.Id;
+	DELETE FROM SavedGame_Entity WHERE EntityId = OLD.Id;
+END;
+
 CREATE TABLE [EntityTemplate] (
 	"Id"		integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	"EntityId"	integer NOT NULL REFERENCES [Entity]([Id]) ON DELETE CASCADE,
@@ -12,10 +21,33 @@ CREATE UNIQUE INDEX [UX_EntityTemplate]
 ON [EntityTemplate]
 ([EntityId]);
 
+CREATE TRIGGER TX_EntityTemplate_Insert
+BEFORE INSERT ON EntityTemplate
+FOR EACH ROW BEGIN
+	SELECT RAISE(ROLLBACK, 'Insert on table EntityTemplate violates foreign key constraint for EntityId.')
+	WHERE NOT EXISTS (SELECT 1 FROM Entity WHERE Id = NEW.EntityId);
+END;
+CREATE TRIGGER TX_EntityTemplate_Update
+BEFORE UPDATE ON EntityTemplate
+FOR EACH ROW BEGIN
+	SELECT RAISE(ROLLBACK, 'Update on table EntityTemplate violates foreign key constraint for EntityId.')
+	WHERE NOT EXISTS (SELECT 1 FROM Entity WHERE Id = NEW.EntityId);
+END;
+
 CREATE TABLE [Component] (
 	"Id"		integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	"Classname"	varchar(250) NOT NULL
 );
+
+CREATE UNIQUE INDEX [UX_Component]
+ON [Component]
+([Classname]);
+
+CREATE TRIGGER TX_Component_Delete
+BEFORE DELETE ON Component
+FOR EACH ROW BEGIN
+	DELETE FROM EntityComponent WHERE ComponentId = OLD.Id;
+END;
 
 CREATE TABLE [EntityComponent] (
 	"Id"			integer PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -27,11 +59,41 @@ CREATE UNIQUE INDEX [UX_EntityComponent]
 ON [EntityComponent]
 ([EntityId], [ComponentId]);
 
+CREATE TRIGGER TX_EntityComponent_Insert
+BEFORE INSERT ON EntityComponent
+FOR EACH ROW BEGIN
+	SELECT RAISE(ROLLBACK, 'Insert on table EntityComponent violates foreign key constraint for EntityId.')
+	WHERE NOT EXISTS (SELECT 1 FROM Entity WHERE Id = NEW.EntityId);
+	SELECT RAISE(ROLLBACK, 'Insert on table EntityComponent violates foreign key constraint for ComponentId.')
+	WHERE NOT EXISTS (SELECT 1 FROM Component WHERE Id = NEW.ComponentId);
+END;
+CREATE TRIGGER TX_EntityComponent_Update
+BEFORE UPDATE ON EntityComponent
+FOR EACH ROW BEGIN
+	SELECT RAISE(ROLLBACK, 'Update on table EntityComponent violates foreign key constraint for EntityId.')
+	WHERE NOT EXISTS (SELECT 1 FROM Entity WHERE Id = NEW.EntityId);
+	SELECT RAISE(ROLLBACK, 'Update on table EntityComponent violates foreign key constraint for ComponentId.')
+	WHERE NOT EXISTS (SELECT 1 FROM Component WHERE Id = NEW.ComponentId);
+END;
+CREATE TRIGGER TX_EntityComponent_Delete
+BEFORE DELETE ON EntityComponent
+FOR EACH ROW BEGIN
+	DELETE FROM EntityComponent_Data WHERE EntityComponentId = OLD.Id;
+	DELETE FROM EntityComponent_Array WHERE EntityComponentId = OLD.Id;
+END;
+
 CREATE TABLE [Array] (
 	"Id"			integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	"Length"		integer NOT NULL,
 	"DataType"		varchar(250) NOT NULL
 );
+
+CREATE TRIGGER TX_Array_Delete
+BEFORE DELETE ON Array
+FOR EACH ROW BEGIN
+	DELETE FROM ArrayData WHERE ArrayId = OLD.Id;
+	DELETE FROM EntityComponent_Array WHERE ArrayId = OLD.Id;
+END;
 
 CREATE TABLE [ArrayData] (
 	"ArrayId"		integer NOT NULL REFERENCES [Array]([Id]) ON DELETE CASCADE,
@@ -39,6 +101,19 @@ CREATE TABLE [ArrayData] (
 	"Value"			varchar,
     PRIMARY KEY ([ArrayId], [Index])
 );
+
+CREATE TRIGGER TX_ArrayData_Insert
+BEFORE INSERT ON ArrayData
+FOR EACH ROW BEGIN
+	SELECT RAISE(ROLLBACK, 'Insert on table ArrayData violates foreign key constraint for ArrayId.')
+	WHERE NOT EXISTS (SELECT 1 FROM Array WHERE Id = NEW.ArrayId);
+END;
+CREATE TRIGGER TX_ArrayData_Update
+BEFORE UPDATE ON ArrayData
+FOR EACH ROW BEGIN
+	SELECT RAISE(ROLLBACK, 'Update on table ArrayData violates foreign key constraint for ArrayId.')
+	WHERE NOT EXISTS (SELECT 1 FROM Array WHERE Id = NEW.ArrayId);
+END;
 
 CREATE TABLE [EntityComponent_Data] (
 	"EntityComponentId"	integer NOT NULL REFERENCES [EntityComponent]([Id]) ON DELETE CASCADE,
@@ -48,6 +123,19 @@ CREATE TABLE [EntityComponent_Data] (
     PRIMARY KEY ([EntityComponentId], [Property])
 );
 
+CREATE TRIGGER TX_EntityComponent_Data_Insert
+BEFORE INSERT ON EntityComponent_Data
+FOR EACH ROW BEGIN
+	SELECT RAISE(ROLLBACK, 'Insert on table EntityComponent_Data violates foreign key constraint for EntityComponentId.')
+	WHERE NOT EXISTS (SELECT 1 FROM EntityComponent WHERE Id = NEW.EntityComponentId);
+END;
+CREATE TRIGGER TX_EntityComponent_Data_Update
+BEFORE UPDATE ON EntityComponent_Data
+FOR EACH ROW BEGIN
+	SELECT RAISE(ROLLBACK, 'Update on table EntityComponent_Data violates foreign key constraint for EntityComponentId.')
+	WHERE NOT EXISTS (SELECT 1 FROM EntityComponent WHERE Id = NEW.EntityComponentId);
+END;
+
 CREATE TABLE [EntityComponent_Array] (
 	"EntityComponentId"	integer NOT NULL REFERENCES [EntityComponent]([Id]) ON DELETE CASCADE,
 	"Property"			varchar(50) NOT NULL,
@@ -55,12 +143,22 @@ CREATE TABLE [EntityComponent_Array] (
     PRIMARY KEY ([EntityComponentId], [Property])
 );
 
-CREATE TRIGGER TX_EntityComponent_Array_Delete_Array DELETE ON EntityComponent_Array
+CREATE TRIGGER TX_EntityComponent_Array_Insert
+BEFORE INSERT ON EntityComponent_Array
+FOR EACH ROW BEGIN
+	SELECT RAISE(ROLLBACK, 'Insert on table EntityComponent_Array violates foreign key constraint for EntityComponentId.')
+	WHERE NOT EXISTS (SELECT 1 FROM EntityComponent WHERE Id = NEW.EntityComponentId);
+END;
+CREATE TRIGGER TX_EntityComponent_Array_Update
+BEFORE UPDATE ON EntityComponent_Array
+FOR EACH ROW BEGIN
+	SELECT RAISE(ROLLBACK, 'Update on table EntityComponent_Array violates foreign key constraint for EntityComponentId.')
+	WHERE NOT EXISTS (SELECT 1 FROM EntityComponent WHERE Id = NEW.EntityComponentId);
+END;
+CREATE TRIGGER TX_EntityComponent_Array_Delete
+AFTER DELETE ON EntityComponent_Array
 BEGIN
-	DELETE FROM
-		Array
-	WHERE
-		Id = old.ArrayId;
+	DELETE FROM Array WHERE Id = OLD.ArrayId;
 END;
 
 CREATE TABLE [Level] (
@@ -74,18 +172,38 @@ CREATE UNIQUE INDEX [UX_Level]
 ON [Level]
 ([Number]);
 
+CREATE TRIGGER TX_Level_Delete
+BEFORE DELETE ON Level
+FOR EACH ROW BEGIN
+	DELETE FROM Level_Entity WHERE LevelId = OLD.Id;
+END;
+
 CREATE TABLE [Level_Entity] (
 	"LevelId"	integer NOT NULL REFERENCES [Level]([Id]) ON DELETE CASCADE,
 	"EntityId"	integer NOT NULL REFERENCES [Entity]([Id]) ON DELETE CASCADE,
     PRIMARY KEY ([LevelId], [EntityId])
 );
 
-CREATE TRIGGER TX_Level_Entity_Delete_Entity DELETE ON Level_Entity
+CREATE TRIGGER TX_Level_Entity_Insert
+BEFORE INSERT ON Level_Entity
+FOR EACH ROW BEGIN
+	SELECT RAISE(ROLLBACK, 'Insert on table Level_Entity violates foreign key constraint for EntityId.')
+	WHERE NOT EXISTS (SELECT 1 FROM Entity WHERE Id = NEW.EntityId);
+	SELECT RAISE(ROLLBACK, 'Insert on table Level_Entity violates foreign key constraint for LevelId.')
+	WHERE NOT EXISTS (SELECT 1 FROM Level WHERE Id = NEW.LevelId);
+END;
+CREATE TRIGGER TX_Level_Entity_Update
+BEFORE UPDATE ON Level_Entity
+FOR EACH ROW BEGIN
+	SELECT RAISE(ROLLBACK, 'Update on table Level_Entity violates foreign key constraint for EntityId.')
+	WHERE NOT EXISTS (SELECT 1 FROM Entity WHERE Id = NEW.EntityId);
+	SELECT RAISE(ROLLBACK, 'Update on table Level_Entity violates foreign key constraint for LevelId.')
+	WHERE NOT EXISTS (SELECT 1 FROM Level WHERE Id = NEW.LevelId);
+END;
+CREATE TRIGGER TX_Level_Entity_Delete
+AFTER DELETE ON Level_Entity
 BEGIN
-	DELETE FROM
-		Entity
-	WHERE
-		Id = old.EntityId;
+	DELETE FROM Entity WHERE Id = OLD.EntityId;
 END;
 
 CREATE TABLE [SavedGame] (
@@ -98,16 +216,36 @@ CREATE UNIQUE INDEX [UX_SavedGame]
 ON [SavedGame]
 ([Name]);
 
+CREATE TRIGGER TX_SavedGame_Delete
+BEFORE DELETE ON SavedGame
+FOR EACH ROW BEGIN
+	DELETE FROM SavedGame_Entity WHERE SavedGameId = OLD.Id;
+END;
+
 CREATE TABLE [SavedGame_Entity] (
 	"SavedGameId"	integer NOT NULL REFERENCES [SavedGame]([Id]) ON DELETE CASCADE,
 	"EntityId"		integer NOT NULL REFERENCES [Entity]([Id]) ON DELETE CASCADE,
     PRIMARY KEY ([SavedGameId], [EntityId])
 );
 
-CREATE TRIGGER TX_SavedGame_Entity_Delete_Entity DELETE ON SavedGame_Entity
+CREATE TRIGGER TX_SavedGame_Entity_Insert
+BEFORE INSERT ON SavedGame_Entity
+FOR EACH ROW BEGIN
+	SELECT RAISE(ROLLBACK, 'Insert on table SavedGame_Entity violates foreign key constraint for EntityId.')
+	WHERE NOT EXISTS (SELECT 1 FROM Entity WHERE Id = NEW.EntityId);
+	SELECT RAISE(ROLLBACK, 'Insert on table SavedGame_Entity violates foreign key constraint for SavedGameId.')
+	WHERE NOT EXISTS (SELECT 1 FROM SavedGame WHERE Id = NEW.SavedGameId);
+END;
+CREATE TRIGGER TX_SavedGame_Entity_Update
+BEFORE UPDATE ON SavedGame_Entity
+FOR EACH ROW BEGIN
+	SELECT RAISE(ROLLBACK, 'Update on table SavedGame_Entity violates foreign key constraint for EntityId.')
+	WHERE NOT EXISTS (SELECT 1 FROM Entity WHERE Id = NEW.EntityId);
+	SELECT RAISE(ROLLBACK, 'Update on table SavedGame_Entity violates foreign key constraint for SavedGameId.')
+	WHERE NOT EXISTS (SELECT 1 FROM SavedGame WHERE Id = NEW.SavedGameId);
+END;
+CREATE TRIGGER TX_SavedGame_Entity_Delete
+AFTER DELETE ON SavedGame_Entity
 BEGIN
-	DELETE FROM
-		Entity
-	WHERE
-		Id = old.EntityId;
+	DELETE FROM Entity WHERE Id = OLD.EntityId;
 END;
