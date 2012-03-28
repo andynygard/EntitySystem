@@ -1,6 +1,5 @@
 ﻿namespace EntitySystem
 {
-    using EntitySystem.Entity;
     using EntitySystem.Subsystem;
 
     /// <summary>

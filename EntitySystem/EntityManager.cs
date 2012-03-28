@@ -1,4 +1,4 @@
-﻿namespace EntitySystem.Entity
+﻿namespace EntitySystem
 {
     using System;
     using System.Collections.Generic;
@@ -10,7 +10,7 @@
     /// This class is not thread safe.
     /// </summary>
     public class EntityManager :
-        IEnumerable<KeyValuePair<int, IComponent>>
+        IEnumerable<KeyValuePair<Entity, IComponent>>
     {
         #region Constants
 
@@ -31,12 +31,12 @@
         /// <summary>
         /// Mapping of component type to each entity that uses that component and the component instance itself.
         /// </summary>
-        private Dictionary<Type, Dictionary<int, IComponent>> componentsByType;
+        private Dictionary<Type, Dictionary<Entity, IComponent>> componentsByType;
 
         /// <summary>
         /// A list of the existing entities such that a new unique entity id can quickly be created.
         /// </summary>
-        private HashSet<int> existingEntities;
+        private HashSet<int> existingEntityIds;
 
         /// <summary>
         /// The lowest unassigned entity id.
@@ -52,8 +52,8 @@
         /// </summary>
         public EntityManager()
         {
-            this.componentsByType = new Dictionary<Type, Dictionary<int, IComponent>>();
-            this.existingEntities = new HashSet<int>();
+            this.componentsByType = new Dictionary<Type, Dictionary<Entity, IComponent>>();
+            this.existingEntityIds = new HashSet<int>();
             this.lowestUnnasignedEntity = MinEntityId;
         }
 
@@ -89,17 +89,17 @@
         /// Create a new entity.
         /// </summary>
         /// <returns>The new entity.</returns>
-        public int CreateEntity()
+        public Entity CreateEntity()
         {
-            int entity;
+            Entity entity;
 
             lock (this.newEntityLock)
             {
-                // Generate the id
-                entity = this.GenerateNewEntityId();
+                // Generate the entity
+                entity = this.GenerateNewEntity();
 
                 // Retain the id to prevent it from being used again
-                this.existingEntities.Add(entity);
+                this.existingEntityIds.Add(entity.Id);
             }
 
             // Fire event
@@ -115,18 +115,18 @@
         /// Remove all references to the given entity.
         /// </summary>
         /// <param name="entity">The entity to remove.</param>
-        public void RemoveEntity(int entity)
+        public void RemoveEntity(Entity entity)
         {
             // Get the list of components with this entity
-            var componentsToRemove = new List<Dictionary<int, IComponent>>();
+            var componentsToRemove = new List<Dictionary<Entity, IComponent>>();
 
             lock (this.newEntityLock)
             {
                 // Remove this entity from the internal list
-                this.existingEntities.Remove(entity);
+                this.existingEntityIds.Remove(entity.Id);
 
                 // Fire removal event for each component
-                foreach (Dictionary<int, IComponent> componentsByEntity in this.componentsByType.Values)
+                foreach (Dictionary<Entity, IComponent> componentsByEntity in this.componentsByType.Values)
                 {
                     if (componentsByEntity.ContainsKey(entity))
                     {
@@ -142,7 +142,7 @@
                 }
 
                 // Now actually remove the components
-                foreach (Dictionary<int, IComponent> componentsByEntity in componentsToRemove)
+                foreach (Dictionary<Entity, IComponent> componentsByEntity in componentsToRemove)
                 {
                     componentsByEntity.Remove(entity);
                 }
@@ -160,17 +160,17 @@
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <param name="component">The component to add.</param>
-        public void AddComponent(int entity, IComponent component)
+        public void AddComponent(Entity entity, IComponent component)
         {
             // Get the components dictionary for this component type
-            Dictionary<int, IComponent> componentsByEntity;
+            Dictionary<Entity, IComponent> componentsByEntity;
             if (this.componentsByType.ContainsKey(component.GetType()))
             {
                 componentsByEntity = this.componentsByType[component.GetType()];
             }
             else
             {
-                componentsByEntity = new Dictionary<int, IComponent>();
+                componentsByEntity = new Dictionary<Entity, IComponent>();
                 this.componentsByType.Add(component.GetType(), componentsByEntity);
             }
 
@@ -189,12 +189,12 @@
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <param name="component">The component to remove.</param>
-        public void RemoveComponent(int entity, IComponent component)
+        public void RemoveComponent(Entity entity, IComponent component)
         {
             if (this.componentsByType.ContainsKey(component.GetType()))
             {
                 // Remove the component
-                Dictionary<int, IComponent> componentsByEntity = this.componentsByType[component.GetType()];
+                Dictionary<Entity, IComponent> componentsByEntity = this.componentsByType[component.GetType()];
                 componentsByEntity.Remove(entity);
 
                 // Fire event
@@ -215,11 +215,11 @@
         /// <param name="entity">The entity.</param>
         /// <param name="componentType">The component type.</param>
         /// <returns>The component instance; null if the entity does not have the given component.</returns>
-        public IComponent GetComponent(int entity, Type componentType)
+        public IComponent GetComponent(Entity entity, Type componentType)
         {
             if (this.componentsByType.ContainsKey(componentType))
             {
-                Dictionary<int, IComponent> componentsByEntity = this.componentsByType[componentType];
+                Dictionary<Entity, IComponent> componentsByEntity = this.componentsByType[componentType];
                 if (componentsByEntity.ContainsKey(entity))
                 {
                     return componentsByEntity[entity];
@@ -251,7 +251,7 @@
         /// </summary>
         /// <param name="componentType">The type of component.</param>
         /// <returns>A collection of entities.</returns>
-        public IEnumerable<int> GetEntitiesWithComponent(Type componentType)
+        public IEnumerable<Entity> GetEntitiesWithComponent(Type componentType)
         {
             if (this.componentsByType.ContainsKey(componentType))
             {
@@ -259,7 +259,7 @@
             }
             else
             {
-                return new int[0];
+                return new Entity[0];
             }
         }
 
@@ -269,7 +269,7 @@
         /// Note: This is not ordered by entity.
         /// </summary>
         /// <returns>An enumerator object.</returns>
-        public IEnumerator<KeyValuePair<int, IComponent>> GetEnumerator()
+        public IEnumerator<KeyValuePair<Entity, IComponent>> GetEnumerator()
         {
             return new EntityComponentEnumerator(this);
         }
@@ -293,22 +293,22 @@
         /// Generate a new entity id that isn't being used.
         /// </summary>
         /// <returns>An entity id.</returns>
-        private int GenerateNewEntityId()
+        private Entity GenerateNewEntity()
         {
             lock (this.newEntityLock)
             {
                 if (this.lowestUnnasignedEntity < int.MaxValue)
                 {
-                    return this.lowestUnnasignedEntity++;
+                    return new Entity(this.lowestUnnasignedEntity++);
                 }
                 else
                 {
                     // Take the first free entity
                     for (int i = MinEntityId; i < int.MaxValue; i++)
                     {
-                        if (!this.existingEntities.Contains(i))
+                        if (!this.existingEntityIds.Contains(i))
                         {
-                            return i;
+                            return new Entity(i);
                         }
                     }
 
@@ -323,18 +323,18 @@
         /// Iterates over all entity-component pairs in an EntityManager.
         /// </summary>
         private class EntityComponentEnumerator :
-            IEnumerator<KeyValuePair<int, IComponent>>
+            IEnumerator<KeyValuePair<Entity, IComponent>>
         {
             /// <summary>
             /// The enumerator for the top-level dictionary in the entity manager for which the enumerator of each
             /// component dictionary (set to currentEnumerator) is iterated over.
             /// </summary>
-            private IEnumerator<Dictionary<int, IComponent>> topEnumerator;
+            private IEnumerator<Dictionary<Entity, IComponent>> topEnumerator;
 
             /// <summary>
             /// The enumerator for the dictionary at the current element of topEnumerator.
             /// </summary>
-            private IEnumerator<KeyValuePair<int, IComponent>> currentEnumerator;
+            private IEnumerator<KeyValuePair<Entity, IComponent>> currentEnumerator;
 
             /// <summary>
             /// Initializes a new instance of the EntityComponentEnumerator class.
@@ -349,7 +349,7 @@
             /// <summary>
             /// Gets the element in the collection at the current position of the enumerator.
             /// </summary>
-            public KeyValuePair<int, IComponent> Current
+            public KeyValuePair<Entity, IComponent> Current
             {
                 get
                 {

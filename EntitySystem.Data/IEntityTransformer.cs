@@ -1,7 +1,5 @@
 ﻿namespace EntitySystem.Data
 {
-    using EntitySystem.Entity;
-
     /// <summary>
     /// Responsible for transforming entities into a serializable or deserializable state. The reason for this is that
     /// the component structure of entities can be different at runtime compared to when they are stored as data (as

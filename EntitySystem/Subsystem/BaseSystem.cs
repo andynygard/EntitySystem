@@ -1,7 +1,5 @@
 ﻿namespace EntitySystem.Subsystem
 {
-    using EntitySystem.Entity;
-
     /// <summary>
     /// A base abstract implementation of the ISystem interface.
     /// </summary>

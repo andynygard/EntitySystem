@@ -43,9 +43,10 @@
   <ItemGroup>
     <Compile Include="Callbacks.cs" />
     <Compile Include="CustomAttributes.cs" />
+    <Compile Include="Entity.cs" />
     <Compile Include="EntitySystemWorld.cs" />
     <Compile Include="Subsystem\BaseSystem.cs" />
-    <Compile Include="Entity\EntityManager.cs" />
+    <Compile Include="EntityManager.cs" />
     <Compile Include="Component\IComponent.cs" />
     <Compile Include="Subsystem\ISystem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

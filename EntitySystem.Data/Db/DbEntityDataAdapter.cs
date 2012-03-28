@@ -5,7 +5,6 @@
     using System.Data.Common;
     using System.Reflection;
     using EntitySystem.Component;
-    using EntitySystem.Entity;
 
     /// <summary>
     /// Serves a bridge between the entity system and a database for loading and saving level data.
@@ -129,67 +128,67 @@
                             this.ClearLevel(connection, dbLevelId);
 
                             // Key = local entity; Value = db entity id
-                            var addedEntities = new Dictionary<int, int>();
-                            var addedComponents = new Dictionary<IComponent, int>();
-                            var addedEntityComponents = new Dictionary<int, Dictionary<int, int>>();
+                            var dbEntityIds = new Dictionary<Entity, int>();
+                            var dbComponentIds = new Dictionary<IComponent, int>();
+                            var dbEntityComponentIds = new Dictionary<int, Dictionary<int, int>>();
+
+                            // Create each entity in the level. Components may reference other entities, so we to make
+                            // sure that all entities exist in the table to be referenced
+                            foreach (KeyValuePair<Entity, IComponent> kvp in entityManager)
+                            {
+                                if (!dbEntityIds.ContainsKey(kvp.Key))
+                                {
+                                    dbEntityIds.Add(kvp.Key, this.CreateEntityInLevel(connection, dbLevelId));
+                                }
+                            }
 
                             // Iterate over all entity-components in the entity manager
-                            foreach (KeyValuePair<int, IComponent> kvp in entityManager)
+                            foreach (KeyValuePair<Entity, IComponent> kvp in entityManager)
                             {
-                                int entity = kvp.Key;
+                                Entity entity = kvp.Key;
                                 IComponent component = kvp.Value;
 
                                 // Get the database entity id
-                                int dbEntityId;
-                                if (addedEntities.ContainsKey(entity))
-                                {
-                                    dbEntityId = addedEntities[entity];
-                                }
-                                else
-                                {
-                                    // The entity doesn't exist so create it
-                                    dbEntityId = this.CreateEntityInLevel(connection, dbLevelId);
-                                    addedEntities.Add(entity, dbEntityId);
-                                }
+                                int dbEntityId = dbEntityIds[entity];
 
                                 // Get the database component id
                                 int dbComponentId;
-                                if (addedComponents.ContainsKey(component))
+                                if (dbComponentIds.ContainsKey(component))
                                 {
-                                    dbComponentId = addedComponents[component];
+                                    dbComponentId = dbComponentIds[component];
                                 }
                                 else
                                 {
                                     // The component doesn't exist so create it
                                     dbComponentId = this.CreateComponent(connection, component.GetType().ToString());
-                                    addedComponents.Add(component, dbComponentId);
+                                    dbComponentIds.Add(component, dbComponentId);
                                 }
 
                                 // Get the database entity-component id
                                 int dbEntityComponentId;
-                                if (addedEntityComponents.ContainsKey(dbEntityId) &&
-                                    addedEntityComponents[dbEntityId].ContainsKey(dbComponentId))
+                                if (dbEntityComponentIds.ContainsKey(dbEntityId) &&
+                                    dbEntityComponentIds[dbEntityId].ContainsKey(dbComponentId))
                                 {
-                                    dbEntityComponentId = addedEntityComponents[dbEntityId][dbComponentId];
+                                    dbEntityComponentId = dbEntityComponentIds[dbEntityId][dbComponentId];
                                 }
                                 else
                                 {
                                     // The entity-component doesn't exist so create it
                                     dbEntityComponentId = this.CreateEntityComponent(connection, dbEntityId, dbComponentId);
-                                    if (addedEntityComponents.ContainsKey(dbEntityId))
+                                    if (dbEntityComponentIds.ContainsKey(dbEntityId))
                                     {
-                                        addedEntityComponents[dbEntityId].Add(dbComponentId, dbEntityComponentId);
+                                        dbEntityComponentIds[dbEntityId].Add(dbComponentId, dbEntityComponentId);
                                     }
                                     else
                                     {
-                                        addedEntityComponents.Add(
+                                        dbEntityComponentIds.Add(
                                             dbEntityId,
                                             new Dictionary<int, int>() { { dbComponentId, dbEntityComponentId } });
                                     }
                                 }
 
                                 // Add the data for this component
-                                this.AddEntityComponentData(connection, dbEntityComponentId, component);
+                                this.AddEntityComponentData(connection, dbEntityComponentId, component, dbEntityIds);
                             }
 
                             // Commit the transaction
@@ -320,7 +319,12 @@
         /// <param name="connection">The database connection.</param>
         /// <param name="entityComponentId">The entity-component id in the database.</param>
         /// <param name="component">The component whose data will be added.</param>
-        private void AddEntityComponentData(DbConnection connection, int entityComponentId, IComponent component)
+        /// <param name="dbEntityIds">The mapping of entities to their database ids.</param>
+        private void AddEntityComponentData(
+            DbConnection connection,
+            int entityComponentId,
+            IComponent component,
+            Dictionary<Entity, int> dbEntityIds)
         {
             // Get the public gettable properties
             PropertyInfo[] properties = component.GetType().GetProperties(
@@ -343,8 +347,8 @@
                 // Add the data
                 if (!property.PropertyType.IsArray)
                 {
-                    // This is not an array so simply add the data row
                     string valueStr = value != null ? value.ToString() : null;
+
                     using (DbCommand command = ESCommand.CreateEntityComponentData(
                         connection,
                         entityComponentId,

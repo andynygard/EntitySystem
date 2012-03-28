@@ -1,7 +1,5 @@
 ﻿namespace EntitySystem.Data
 {
-    using EntitySystem.Entity;
-
     /// <summary>
     /// This class serves a bridge between the entity system and a data source for loading and saving level data.
     /// </summary>
