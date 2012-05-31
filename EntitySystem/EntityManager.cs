@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using EntitySystem.Component;
 
     /// <summary>
@@ -164,11 +165,7 @@
         {
             // Get the components dictionary for this component type
             Dictionary<Entity, IComponent> componentsByEntity;
-            if (this.componentsByType.ContainsKey(component.GetType()))
-            {
-                componentsByEntity = this.componentsByType[component.GetType()];
-            }
-            else
+            if (!this.componentsByType.TryGetValue(component.GetType(), out componentsByEntity))
             {
                 componentsByEntity = new Dictionary<Entity, IComponent>();
                 this.componentsByType.Add(component.GetType(), componentsByEntity);
@@ -191,10 +188,10 @@
         /// <param name="component">The component to remove.</param>
         public void RemoveComponent(Entity entity, IComponent component)
         {
-            if (this.componentsByType.ContainsKey(component.GetType()))
+            Dictionary<Entity, IComponent> componentsByEntity;
+            if (this.componentsByType.TryGetValue(component.GetType(), out componentsByEntity))
             {
                 // Remove the component
-                Dictionary<Entity, IComponent> componentsByEntity = this.componentsByType[component.GetType()];
                 componentsByEntity.Remove(entity);
 
                 // Fire event
@@ -217,10 +214,11 @@
         /// <returns>The component instance; null if the entity does not have the given component.</returns>
         public IComponent GetComponent(Entity entity, Type componentType)
         {
-            if (this.componentsByType.ContainsKey(componentType))
+            Dictionary<Entity, IComponent> componentsByEntity;
+            if (this.componentsByType.TryGetValue(componentType, out componentsByEntity))
             {
-                Dictionary<Entity, IComponent> componentsByEntity = this.componentsByType[componentType];
-                if (componentsByEntity.ContainsKey(entity))
+                IComponent component;
+                if (componentsByEntity.TryGetValue(entity, out component))
                 {
                     return componentsByEntity[entity];
                 }
@@ -236,14 +234,13 @@
         /// <returns>A collection of components.</returns>
         public IEnumerable<IComponent> GetComponents(Type componentType)
         {
-            if (this.componentsByType.ContainsKey(componentType))
+            Dictionary<Entity, IComponent> componentsByEntity;
+            if (this.componentsByType.TryGetValue(componentType, out componentsByEntity))
             {
-                return this.componentsByType[componentType].Values;
+                return componentsByEntity.Values;
             }
-            else
-            {
-                return new IComponent[0];
-            }
+
+            return new IComponent[0];
         }
 
         /// <summary>
@@ -253,14 +250,51 @@
         /// <returns>A collection of entities.</returns>
         public IEnumerable<Entity> GetEntitiesWithComponent(Type componentType)
         {
-            if (this.componentsByType.ContainsKey(componentType))
+            Dictionary<Entity, IComponent> componentsByEntity;
+            if (this.componentsByType.TryGetValue(componentType, out componentsByEntity))
             {
-                return this.componentsByType[componentType].Keys;
+                return componentsByEntity.Keys;
             }
-            else
+
+            return new Entity[0];
+        }
+
+        /// <summary>
+        /// Gets the first component of the given type.
+        /// </summary>
+        /// <param name="componentType">The type of component.</param>
+        /// <returns>The first component; Null if no entities exist with the given component type.</returns>
+        public IComponent GetFirstComponent(Type componentType)
+        {
+            Dictionary<Entity, IComponent> componentsByEntity;
+            if (this.componentsByType.TryGetValue(componentType, out componentsByEntity))
             {
-                return new Entity[0];
+                if (componentsByEntity.Count > 0)
+                {
+                    return componentsByEntity.First().Value;
+                }
             }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the first entity with a component of the given type.
+        /// </summary>
+        /// <param name="componentType">The type of component.</param>
+        /// <returns>The first entity; Null if no entities exist with the given component type.</returns>
+        public Entity GetFirstEntityWithComponent(Type componentType)
+        {
+            Dictionary<Entity, IComponent> componentsByEntity;
+            if (this.componentsByType.TryGetValue(componentType, out componentsByEntity))
+            {
+                if (componentsByEntity.Count > 0)
+                {
+                    return componentsByEntity.First().Key;
+                }
+            }
+
+            return null;
         }
 
         /// <summary>
